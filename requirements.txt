@@ -1,0 +1,4 @@
+Django==2.1.1
+django-simple-history==2.3.0
+djangorestframework==3.8.2
+djangorestframework-gis==0.13

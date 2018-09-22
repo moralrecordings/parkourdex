@@ -1,0 +1,13 @@
+syntax: glob
+*.pyc
+*.swp
+*.swo
+build
+dist
+*.egg-info
+venv
+doc/build
+.coverage
+node_modules
+frontend/dist
+.env

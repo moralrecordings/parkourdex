@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>PARKOURDEX</title>
+    <style>
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+    </style>
+  </head>
+  <body>
+    <noscript>
+      <strong>We're sorry but PARKOURDEX doesn't work properly without JavaScript! Please enable it to continue.</strong>
+    </noscript>
+    <div id="app"></div>
+    <script type="text/javascript">
+var trainingMap = null;
+window.onload = function () {
+    trainingMap = trainingMapApp('#app', '<%= VUE_APP_PARKOURDEX_URL %>', '<%= VUE_APP_MAPBOX_TOKEN %>');
+};
+    </script>
+    <!-- built files will be auto injected -->
+  </body>
+</html>
