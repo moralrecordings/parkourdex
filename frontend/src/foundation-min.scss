@@ -1,8 +1,21 @@
 // reduced subset of Foundation 6
 // used to avoid full-on nuclear war with other CSS themes
+
+// override default settings here!
+
+// make side panes bigger
+$offcanvas-sizes: (
+    small: 100vw,
+    medium: 380px,
+);
+
+$switch-background: #888888;
+
+
+// load foundation
 @import 'foundation-sites/scss/foundation.scss';
 
-
+$primary-color: #2199e8;
 
 // sorry, we need to set the font size on the root element to not break rem
 html {
@@ -37,11 +50,20 @@ html {
     @include foundation-pagination;
     @include foundation-tooltip;
     @include foundation-thumbnail;
+    @include foundation-switch;
+
+    input:checked ~ .switch-paddle {
+        background: $primary-color;
+    }
 
     @include foundation-reveal;
     @include foundation-close-button;
 
     @include foundation-visibility-classes;
+    
+    @include foundation-off-canvas;
+
+
     // bootstrap will inject spaces before and after .row elements, set to the table display type.
     // despite being 100% nuts this normally isn't an issue, except (of course!) on Mobile Safari
     .row:after, .row:before {
