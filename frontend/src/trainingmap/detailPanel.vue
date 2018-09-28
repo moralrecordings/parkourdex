@@ -1,5 +1,6 @@
 <template>
-    <div>
+    <div class="grid-container full">
+        <h3>White Walls</h3>
         <div class="grid-x">
             <div class="cell shrink">
                 <div class="switch small">
