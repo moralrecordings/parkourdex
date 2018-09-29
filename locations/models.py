@@ -10,10 +10,10 @@ import os
 
 
 class Base( models.Model ):
-    created_by = models.ForeignKey( get_user_model(), null=True, on_delete=models.SET_NULL )
+    created_by = models.ForeignKey( get_user_model(), null=True, on_delete=models.SET_NULL, related_name='%(app_label)s_%(class)s_created' )
     created_on = models.DateTimeField( auto_now_add=True )
-    modified_by = models.ForeignKey( get_user_model(), null=True, on_delete=models.SET_NULL )
-    modified_on = models.DateTimeField()
+    modified_by = models.ForeignKey( get_user_model(), null=True, on_delete=models.SET_NULL, related_name='%(app_label)s_%(class)s_modified' )
+    modified_on = models.DateTimeField( auto_now=True )
     history = HistoricalRecords()
 
     @property
@@ -29,28 +29,40 @@ class Base( models.Model ):
         return self.modified_on
 
     @_history_date.setter
-    def _history_date( self, value )
+    def _history_date( self, value ):
         self.modified_on = value
 
     class Meta:
         abstract = True
 
 
-class TrainingFeature( Base ):
+class FeatureCategory( Base ):
+    name = models.CharField( max_length=256, unique=True )
+
+    def __str__( self ):
+        return self.name
+
+
+class Feature( Base ):
     name = models.CharField( max_length=256, unique=True )
     description = models.TextField()
+    category = models.ForeignKey( FeatureCategory, null=True, related_name='features', on_delete=models.SET_NULL )
     icon = models.ImageField()
 
+    def __str__( self ):
+        return self.name
 
-class TrainingSpot( Base ):
+
+class Location( Base ):
     name = models.CharField( max_length=256 )
     location = models.PointField()
     description = models.TextField()
-    features = models.ManyToManyField( TrainingFeature, related_name='spots' )
+    features = models.ManyToManyField( Feature, related_name='locations' )
 
 
-class TrainingLore( Base ):
-    lore = models.TextField()
+class Comment( Base ):
+    location = models.ForeignKey( Location, null=True, related_name='comments', on_delete=models.SET_NULL )
+    comment = models.TextField()
 
 
 def get_photo_path( instance, filename ):
@@ -58,7 +70,7 @@ def get_photo_path( instance, filename ):
 
 
 class Photo( Base ):
-    training_spot = models.ForeignKey( TrainingSpot, null=True, related_name='photos' )
+    location = models.ForeignKey( Location, null=True, related_name='photos', on_delete=models.SET_NULL )
     photo = models.ImageField( upload_to=get_photo_path )
 
 
