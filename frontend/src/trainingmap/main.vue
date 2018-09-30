@@ -3,6 +3,7 @@
     <div class="off-canvas position-left" v-bind:class="{'is-open': panelEnabled}">
         <aboutPanel v-if="panel == 'about'" v-on:showPanel="showPanel"/>
         <detailPanel v-if="panel == 'detail'" v-on:showPanel="showPanel"/>
+        <filterPanel v-if="panel == 'filters'" v-on:showPanel="showPanel"/>
     </div>
     <div class="off-canvas-content has-transition-push has-position-left grid-y grid-frame" v-bind:class="{'is-open-left': panelEnabled}">
         <LMap ref="map" v-bind:attributionControl="false" v-bind:zoom="zoom" v-bind:center="center" v-bind:options="options">
@@ -11,7 +12,7 @@
             <LCircle v-if="myAccuracy" v-bind:lat-lng="myCoords" v-bind:radius="myAccuracy" v-bind:opacity="0.3" color="#ce5c00" v-bind:fillOpacity="0.10" fillColor="#ce5c00"/>
             <div class="controls-topright button-group stacked">
                 <button class="button expanded" v-on:click="togglePanel('about')">parkourdex v0.1</button>
-                <button class="button expanded">filters</button>
+                <button class="button expanded" v-on:click="togglePanel('filters')">filters</button>
                 <button class="button expanded">add spot</button>
                 <button class="button expanded" v-on:click="toggleGPS" v-bind:class="{ warning: gpsEnabled && !gpsConnected, success: gpsEnabled && gpsConnected }">find me</button>
             </div>
@@ -50,6 +51,9 @@
 
 import aboutPanel from './aboutPanel.vue';
 import detailPanel from './detailPanel.vue';
+import filterPanel from './filterPanel.vue';
+import { fetchFeatureCategories } from './api.js';
+
 import { LMap, LTileLayer, LMarker, LTooltip, LCircle } from 'vue2-leaflet';
 import L from 'leaflet';
 
@@ -64,6 +68,7 @@ export default {
     components: {
         aboutPanel,
         detailPanel,
+        filterPanel,
         LMap,
         LTileLayer,
         LMarker,
@@ -137,6 +142,14 @@ export default {
                 });
             }
         },
+        update: function () {
+            var vm = this;
+            fetchFeatureCategories(this.parkourdexUrl, function (data) {
+                vm.categories = data;
+            }, function (error) {
+                console.log(error);
+            });
+        },
         updateWindow: function () {
             this.$nextTick(function () {
                 this.$refs.map.mapObject.invalidateSize();
@@ -145,6 +158,7 @@ export default {
     },
     mounted: function () {
         this.basemapUrl = this.getMapboxUrl( 'mapbox.outdoors' );
+        this.update();
     }
 }
 </script>
