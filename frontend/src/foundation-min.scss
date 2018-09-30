@@ -11,11 +11,17 @@ $offcanvas-sizes: (
 
 $switch-background: #888888;
 
+$foundation-palette: (
+    primary: #b61708,
+    secondary: #777,
+    success: #3adb76,
+    warning: #ffae00,
+    alert: #ec5840,
+);
 
 // load foundation
 @import 'foundation-sites/scss/foundation.scss';
 
-$primary-color: #2199e8;
 
 // sorry, we need to set the font size on the root element to not break rem
 html {
@@ -43,6 +49,10 @@ html {
     @include foundation-table;
 
     @include foundation-button;
+    .button {
+        font-weight: bold;
+    }
+
     @include foundation-button-group;
     @include foundation-tabs;
     @include foundation-callout;
