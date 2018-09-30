@@ -14,6 +14,7 @@
                 <label for="testSwitch">Add to favourites</label>
             </div>
         </div>
+        <button class="close-button" type="button" v-on:click="$emit('showPanel', 'detail', null)"><span aria-hidden="true">×</span></button>
     </div>
 </template>
 <style lang="scss">

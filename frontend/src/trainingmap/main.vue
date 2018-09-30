@@ -1,16 +1,17 @@
 <template>
 <div class="f6inject">
-    <div class="off-canvas position-left" v-bind:class="{'is-open': showPanel, 'reveal-for-medium': showPanel}">
-        <detailPanel/>
+    <div class="off-canvas position-left" v-bind:class="{'is-open': panelEnabled}">
+        <aboutPanel v-if="panel == 'about'" v-on:showPanel="showPanel"/>
+        <detailPanel v-if="panel == 'detail'" v-on:showPanel="showPanel"/>
     </div>
-    <div class="off-canvas-content has-position-left grid-y grid-frame" v-bind:class="{'is-open-left': showPanel}">
+    <div class="off-canvas-content has-transition-push has-position-left grid-y grid-frame" v-bind:class="{'is-open-left': panelEnabled}">
         <LMap ref="map" v-bind:attributionControl="false" v-bind:zoom="zoom" v-bind:center="center" v-bind:options="options">
             <LTileLayer v-bind:url="basemapUrl"/>
             <LMarker v-if="myCoords" v-bind:lat-lng="myCoords" v-bind:icon="myIcon"/>
-            <div class="controls-topleft">
-                <button class="button" v-on:click="toggleAbout">parkourdex v0.1</button>
-            </div>
+            <LCircle v-if="myAccuracy" v-bind:lat-lng="myCoords" v-bind:radius="myAccuracy" v-bind:opacity="0.3" color="#ce5c00" v-bind:fillOpacity="0.10" fillColor="#ce5c00"/>
             <div class="controls-topright button-group stacked">
+                <button class="button expanded" v-on:click="togglePanel('about')">parkourdex v0.1</button>
+                <button class="button expanded">filters</button>
                 <button class="button expanded">add spot</button>
                 <button class="button expanded" v-on:click="toggleGPS" v-bind:class="{ warning: gpsEnabled && !gpsConnected, success: gpsEnabled && gpsConnected }">find me</button>
             </div>
@@ -33,29 +34,23 @@
         font-weight: inherit;
     }
     
-    .controls-topleft {
-        display: block;
-        position: absolute;
-        top: 1em;
-        left: 1em;
-        z-index: 2000;
-    }
-
     .controls-topright {
-        width: 100px;
+        width: 150px;
         display: block;
         position: absolute;
         top: 1em;
         right: 1em;
         z-index: 2000;
     }
+
 }
 
 </style>
 <script>
 
+import aboutPanel from './aboutPanel.vue';
 import detailPanel from './detailPanel.vue';
-import { LMap, LTileLayer, LMarker, LTooltip } from 'vue2-leaflet';
+import { LMap, LTileLayer, LMarker, LTooltip, LCircle } from 'vue2-leaflet';
 import L from 'leaflet';
 
 import '../foundation-min.scss';
@@ -67,11 +62,13 @@ import gpsIconUrl from './assets/gps.svg';
 export default {
     name: 'mainComponent',
     components: {
+        aboutPanel,
         detailPanel,
         LMap,
         LTileLayer,
         LMarker,
         LTooltip,
+        LCircle,
     },
     data: function () {
         return {
@@ -82,7 +79,6 @@ export default {
                 attributionControl: false,
                 zoomControl: false,
             },
-            showPanel: false,
             gpsWatch: null,
             gpsPosition: null,
             myIcon: new L.Icon({
@@ -93,9 +89,13 @@ export default {
             }),
             myCoords: null,
             myAccuracy: null,
+            panel: null,
         };
     },
     computed: {
+        panelEnabled: function () {
+            return this.panel != null;
+        },
         gpsEnabled: function () {
             return this.gpsWatch != null;
         },
@@ -111,8 +111,12 @@ export default {
         getMapboxUrl: function (layer_id) {
             return `https://api.mapbox.com/v4/${layer_id}/{z}/{x}/{y}.png256?access_token=${this.mapboxToken}`;
         },
-        toggleAbout: function () {
-            this.showPanel = !this.showPanel;
+        showPanel: function (ev, panel_id, source) {
+            this.togglePanel(panel_id);
+        },
+        togglePanel: function (panel_id) {
+            this.panel = this.panel == panel_id ? null : panel_id;
+            this.updateWindow();
         },
         toggleGPS: function () {
             var vm = this;
@@ -132,6 +136,11 @@ export default {
                     maximumAge: 300
                 });
             }
+        },
+        updateWindow: function () {
+            this.$nextTick(function () {
+                this.$refs.map.mapObject.invalidateSize();
+            });
         },
     },
     mounted: function () {
