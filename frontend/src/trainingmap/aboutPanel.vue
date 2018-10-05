@@ -1,7 +1,7 @@
 <template>
     <div class="grid-container full">
         <h3>parkourdex</h3>
-        <button class="close-button" type="button" v-on:click="$emit('showPanel', null, null)"><span aria-hidden="true">×</span></button>
+        <button class="close-button" type="button" v-on:click="$emit('showPanel', 'about', null)"><span aria-hidden="true">×</span></button>
     </div>
 </template>
 <style lang="scss">

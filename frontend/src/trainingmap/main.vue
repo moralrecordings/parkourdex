@@ -137,7 +137,7 @@ export default {
         getMapboxUrl: function (layer_id) {
             return `https://api.mapbox.com/v4/${layer_id}/{z}/{x}/{y}.png256?access_token=${this.mapboxToken}`;
         },
-        showPanel: function (ev, panel_id, source) {
+        showPanel: function (panel_id, source) {
             this.togglePanel(panel_id);
         },
         togglePanel: function (panel_id) {

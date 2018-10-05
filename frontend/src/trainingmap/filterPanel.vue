@@ -44,7 +44,7 @@
                 </div>
             </div>
         </div>
-        <button class="close-button" type="button" v-on:click="$emit('showPanel', null, null)"><span aria-hidden="true">×</span></button>
+        <button class="close-button" type="button" v-on:click="$emit('showPanel', 'filters', null)"><span aria-hidden="true">×</span></button>
     </div>
 </template>
 <style lang="scss">
