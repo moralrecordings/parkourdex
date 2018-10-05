@@ -1,20 +1,28 @@
 <template>
 <div class="f6inject">
-    <div class="off-canvas position-left" v-bind:class="{'is-open': panelEnabled}">
+    <div class="off-canvas position-left" v-bind:class="{'is-open': panelVisible}">
         <aboutPanel v-if="panel == 'about'" v-on:showPanel="showPanel"/>
         <detailPanel v-if="panel == 'detail'" v-on:showPanel="showPanel"/>
-        <filterPanel v-if="panel == 'filters'" v-on:showPanel="showPanel"/>
+        <filterPanel v-if="panel == 'filters'" v-on:showPanel="showPanel" v-bind:features="features" v-bind:categories="categories"/>
     </div>
-    <div class="off-canvas-content has-transition-push has-position-left grid-y grid-frame" v-bind:class="{'is-open-left': panelEnabled}">
+    <div class="off-canvas-content has-transition-push has-position-left grid-y grid-frame" v-bind:class="{'is-open-left': panelVisible}">
         <LMap ref="map" v-bind:attributionControl="false" v-bind:zoom="zoom" v-bind:center="center" v-bind:options="options">
             <LTileLayer v-bind:url="basemapUrl"/>
             <LMarker v-if="myCoords" v-bind:lat-lng="myCoords" v-bind:icon="myIcon"/>
             <LCircle v-if="myAccuracy" v-bind:lat-lng="myCoords" v-bind:radius="myAccuracy" v-bind:opacity="0.3" color="#ce5c00" v-bind:fillOpacity="0.10" fillColor="#ce5c00"/>
+            
+            <LMarker v-for="loc in locations" v-bind:key="loc.id" v-bind:lat-lng="loc.location" v-bind:icon="locIcon">
+                <LTooltip v-bind:content="loc.name"/>
+            </LMarker>
+
             <div class="controls-topright button-group stacked">
                 <button class="button expanded" v-on:click="togglePanel('about')">parkourdex v0.1</button>
                 <button class="button expanded" v-on:click="togglePanel('filters')">filters</button>
-                <button class="button expanded">add spot</button>
+                <!--button class="button expanded">add spot</button-->
                 <button class="button expanded" v-on:click="toggleGPS" v-bind:class="{ warning: gpsEnabled && !gpsConnected, success: gpsEnabled && gpsConnected }">find me</button>
+                <div class="button expanded">
+                    {{ debugInfo }}
+                </div>
             </div>
         </LMap>
     </div>
@@ -53,6 +61,7 @@ import aboutPanel from './aboutPanel.vue';
 import detailPanel from './detailPanel.vue';
 import filterPanel from './filterPanel.vue';
 import { fetchFeatureCategories } from './api.js';
+import { fetchLocations } from './api.js';
 
 import { LMap, LTileLayer, LMarker, LTooltip, LCircle } from 'vue2-leaflet';
 import L from 'leaflet';
@@ -61,6 +70,7 @@ import '../foundation-min.scss';
 import '../leaflet.scss';
 
 import gpsIconUrl from './assets/gps.svg';
+import locIconUrl from './assets/pin.svg';
 
 
 export default {
@@ -92,20 +102,31 @@ export default {
                 iconAnchor: [16, 32],
                 popupAnchor: [0, -20],
             }),
+            locIcon: new L.Icon({
+                iconUrl: `${this.parkourdexUrl}${locIconUrl}`,
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -20],
+            }),
             myCoords: null,
             myAccuracy: null,
             panel: null,
+            panelVisible: false,
+            categories: [],
+            features: [],
+            locations: [],
+            debugInfo: '',
         };
     },
     computed: {
-        panelEnabled: function () {
-            return this.panel != null;
-        },
         gpsEnabled: function () {
             return this.gpsWatch != null;
         },
         gpsConnected: function () {
             return this.gpsPosition != null;
+        },
+        filteredLocations: function () {
+            return this.locations;
         },
     },
     props: {
@@ -120,7 +141,8 @@ export default {
             this.togglePanel(panel_id);
         },
         togglePanel: function (panel_id) {
-            this.panel = this.panel == panel_id ? null : panel_id;
+            this.panelVisible = (this.panel != panel_id) | (!this.panelVisible);
+            this.panel = panel_id;
             this.updateWindow();
         },
         toggleGPS: function () {
@@ -131,11 +153,12 @@ export default {
             } else {
                 this.gpsPosition = null;
                 this.gpsWatch = window.navigator.geolocation.watchPosition(function (pos) {
+                    vm.debugInfo = `${pos.coords.latitude} ${pos.coords.longitude}`;
                     vm.gpsPosition = pos;
                     vm.myCoords = L.latLng(pos.coords.latitude, pos.coords.longitude);
                     vm.myAccuracy = pos.coords.accuracy / 2;
                 }, function (err) {
-                    console.log(err);
+                    vm.debugInfo = err.code;
                 }, {
                     enableHighAccuracy: true,
                     maximumAge: 300
@@ -145,7 +168,13 @@ export default {
         update: function () {
             var vm = this;
             fetchFeatureCategories(this.parkourdexUrl, function (data) {
-                vm.categories = data;
+                vm.features = data.features;
+                vm.categories = data.categories;
+            }, function (error) {
+                console.log(error);
+            });
+            fetchLocations(this.parkourdexUrl, function (data) {
+                vm.locations = data;
             }, function (error) {
                 console.log(error);
             });
@@ -157,7 +186,7 @@ export default {
         },
     },
     mounted: function () {
-        this.basemapUrl = this.getMapboxUrl( 'mapbox.outdoors' );
+        this.basemapUrl = this.getMapboxUrl('mapbox.outdoors');
         this.update();
     }
 }

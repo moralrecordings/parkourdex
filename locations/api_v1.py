@@ -4,7 +4,7 @@ from django.views.decorators.cache import cache_page
 from rest_framework import viewsets, serializers, status, generics, views
 from rest_framework.decorators import detail_route, list_route, renderer_classes, authentication_classes, permission_classes
 
-from locations.models import Feature, FeatureCategory
+from locations.models import Feature, FeatureCategory, Location
 
 
 class FeatureSerializer( serializers.ModelSerializer ):
@@ -40,3 +40,14 @@ class FeatureCategorySerializer( serializers.ModelSerializer ):
 class FeatureCategoryViewSet( viewsets.ReadOnlyModelViewSet ):
     queryset = FeatureCategory.objects.prefetch_related( 'features' ).order_by( 'name' )
     serializer_class = FeatureCategorySerializer
+
+
+class LocationSerializer( serializers.ModelSerializer ):
+    class Meta:
+        model = Location
+        fields = ('id', 'name', 'features', 'location')
+
+
+class LocationViewSet( viewsets.ReadOnlyModelViewSet ):
+    queryset = Location.objects.all()
+    serializer_class = LocationSerializer
