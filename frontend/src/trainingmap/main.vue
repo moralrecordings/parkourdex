@@ -3,7 +3,7 @@
     <div class="off-canvas position-left" v-bind:class="{'is-open': panelVisible}">
         <aboutPanel v-if="panel == 'about'" v-on:showPanel="showPanel"/>
         <detailPanel v-if="panel == 'detail'" v-on:showPanel="showPanel"/>
-        <filterPanel v-if="panel == 'filters'" v-on:showPanel="showPanel" v-bind:features="features" v-bind:categories="categories"/>
+        <filterPanel v-if="panel == 'filters'" v-on:showPanel="showPanel" v-on:updateFilters="updateFilters" v-bind:options="filterOptions" v-bind:features="features" v-bind:categories="categories"/>
     </div>
     <div class="off-canvas-content has-transition-push has-position-left grid-y grid-frame" v-bind:class="{'is-open-left': panelVisible}">
         <LMap ref="map" v-bind:attributionControl="false" v-bind:zoom="zoom" v-bind:center="center" v-bind:options="options">
@@ -18,11 +18,14 @@
             <div class="controls-topright button-group stacked">
                 <button class="button expanded" v-on:click="togglePanel('about')">parkourdex v0.1</button>
                 <button class="button expanded" v-on:click="togglePanel('filters')">filters</button>
-                <!--button class="button expanded">add spot</button-->
+                <button class="button expanded">add spot</button>
                 <button class="button expanded" v-on:click="toggleGPS" v-bind:class="{ warning: gpsEnabled && !gpsConnected, success: gpsEnabled && gpsConnected }">find me</button>
-                <div class="button expanded">
-                    {{ debugInfo }}
-                </div>
+            </div>
+            <div class="controls-bottom callout alert" v-show="alertVisible">
+                <div>{{ alert }}</div>
+                <button class="close-button" aria-label="Dismiss alert" type="button" v-on:click="alertVisible = false">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
         </LMap>
     </div>
@@ -51,6 +54,18 @@
         right: 1em;
         z-index: 2000;
     }
+
+    .controls-bottom {
+        display: block;
+        position: absolute;
+        max-width: 800px;
+        left: 1em;
+        right: 1em;
+        bottom: 1em;
+        margin: 0 auto;
+        z-index: 2000;
+    }
+
 
 }
 
@@ -112,10 +127,14 @@ export default {
             myAccuracy: null,
             panel: null,
             panelVisible: false,
+            filterOptions: {
+                showAll: true
+            },
             categories: [],
             features: [],
             locations: [],
-            debugInfo: '',
+            alert: '',
+            alertVisible: false,
         };
     },
     computed: {
@@ -153,16 +172,39 @@ export default {
             } else {
                 this.gpsPosition = null;
                 this.gpsWatch = window.navigator.geolocation.watchPosition(function (pos) {
-                    vm.debugInfo = `${pos.coords.latitude} ${pos.coords.longitude}`;
+                    vm.alert = `Position at ${pos.coords.latitude} ${pos.coords.longitude} acc ${pos.coords.accuracy}`;
+                    vm.alertVisible = true;
                     vm.gpsPosition = pos;
                     vm.myCoords = L.latLng(pos.coords.latitude, pos.coords.longitude);
                     vm.myAccuracy = pos.coords.accuracy / 2;
                 }, function (err) {
-                    vm.debugInfo = err.code;
+                    vm.alert = `Geolocation failure: ${err.code} (${err.message})`;
+                    vm.alertVisible = true;
                 }, {
                     enableHighAccuracy: true,
                     maximumAge: 300
                 });
+            }
+        },
+        updateFilters: function (type, index, state) {
+            var vm = this;
+            if (type == 'category') {
+                vm.categories[index].enabled = state;
+                vm.categories[index].features.forEach(function (el) {
+                    vm.features[el].enabled = state;
+                });
+            } else if (type == 'feature') {
+                vm.features[index].enabled = state;
+            } else if (type == 'options') {
+                if (index == 'showAll') {
+                    vm.filterOptions[index] = state;
+                    vm.categories.forEach(function (el) {
+                        el.enabled = state;
+                    });
+                    vm.features.forEach(function (el) {
+                        el.enabled = state;
+                    });
+                }
             }
         },
         update: function () {

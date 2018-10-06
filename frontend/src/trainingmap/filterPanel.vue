@@ -7,21 +7,21 @@
             </div>
             <div class="cell shrink">
                 <div class="switch small">
-                    <input class="switch-input" id="swShowAll" type="checkbox" name="swShowAll">
+                    <input class="switch-input" type="checkbox" id="swShowAll" name="swShowAll" v-model="options.showAll" v-on:change="$emit('updateFilters', 'options', 'showAll', options.showAll)">
                     <label class="switch-paddle" for="swShowAll">
                         <span class="show-for-sr">Show all</span>
                     </label>
                 </div> 
             </div>
         </div>
-        <div v-for="cat in categories" v-bind:key="cat.id">
+        <div v-for="(cat, catIndex) in categories" v-bind:key="cat.id">
             <div class="grid-x" style="border: 1px solid black">
                 <div class="cell auto">
                     <label v-bind:for="`swCategory_${ cat.id }`" class="category">{{ cat.name }}</label>
                 </div>
                 <div class="cell shrink">
                     <div class="switch small">
-                        <input class="switch-input" type="checkbox" v-model="cat.enabled" v-bind:id="`swCategory_${ cat.id }`" v-bind:name="`swCategory_${ cat.id }`">
+                        <input class="switch-input" type="checkbox" v-bind:id="`swCategory_${ cat.id }`" v-bind:name="`swCategory_${ cat.id }`" v-model="cat.enabled" v-on:change="$emit('updateFilters', 'category', catIndex, cat.enabled)">
                         <label class="switch-paddle" v-bind:for="`swCategory_${ cat.id }`">
                             <span class="show-for-sr">{{ cat.name }}</span>
                         </label>
@@ -35,7 +35,7 @@
                     </div>
                     <div class="cell shrink">
                         <div class="switch small">
-                            <input class="switch-input" type="checkbox" v-model="features[feat].enabled" v-bind:id="`swFeature_${ features[feat].id }`" v-bind:name="`swFeature_${ features[feat].id }`">
+                            <input class="switch-input" type="checkbox" v-bind:id="`swFeature_${ features[feat].id }`" v-bind:name="`swFeature_${ features[feat].id }`" v-model="features[feat].enabled" v-on:change="$emit('updateFilters', 'feature', feat, features[feat].enabled)">
                             <label class="switch-paddle" v-bind:for="`swFeature_${ features[feat].id }`">
                                 <span class="show-for-sr">{{ features[feat].name }}</span>
                             </label>
@@ -67,6 +67,7 @@ export default {
     props: {
         features: Array,
         categories: Array,
+        options: Object,
     },
     methods: {
         
