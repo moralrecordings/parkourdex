@@ -27,10 +27,16 @@ module.exports = {
         config.output.libraryExport = 'default';
         
         // if production, remove the cache-hint hash from file names
-        if (process.env.NODE_ENV === 'production') {
-            config.output.filename = 'js/[name].js';
-            config.output.chunkFilename = 'js/[name].js';
-        }
+        // UPDATE: I was wondering why this was nuts by default,
+        // answer is iOS sucks and will never, ever replace cached JS!
+        // no, clearly we should ignore the HTTP spec for caching and
+        // remove manual refreshing because load time is the most important 
+        // metric ever. good job lads.
+
+        //if (process.env.NODE_ENV === 'production') {
+        //    config.output.filename = 'js/[name].js';
+        //    config.output.chunkFilename = 'js/[name].js';
+        //}
 
     },
     chainWebpack: function (config) {
