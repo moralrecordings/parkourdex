@@ -1,31 +1,44 @@
 <template>
 <div class="f6inject">
     <div class="off-canvas position-left" v-bind:class="{'is-open': panelVisible}">
-        <aboutPanel v-if="panel == 'about'" v-on:showPanel="showPanel"/>
+        <aboutPanel v-if="panel == 'about'" v-on:showPanel="showPanel" v-bind:parkourdexUrl="parkourdexUrl"/>
+        <editPanel v-if="panel == 'edit'" v-on:showPanel="showPanel" v-on:toggleMode="toggleMode" v-bind:parkourdexUrl="parkourdexUrl"/>
         <detailPanel v-if="panel == 'detail'" v-on:showPanel="showPanel"/>
         <filterPanel v-if="panel == 'filters'" v-on:showPanel="showPanel" v-on:updateFilters="updateFilters" v-bind:options="filterOptions" v-bind:features="features" v-bind:categories="categories"/>
     </div>
     <div class="off-canvas-content has-transition-push has-position-left grid-y grid-frame" v-bind:class="{'is-open-left': panelVisible}">
         <LMap ref="map" v-bind:attributionControl="false" v-bind:zoom="zoom" v-bind:center="center" v-bind:options="options">
             <LTileLayer v-bind:url="basemapUrl"/>
-            <LMarker v-if="myCoords" v-bind:lat-lng="myCoords" v-bind:icon="myIcon"/>
+            <LMarker v-if="myCoords" v-bind:lat-lng="myCoords" v-bind:icon="myIcon">
+                <LTooltip v-bind:content="`(${myCoords.lat}, ${myCoords.lng}) ±${myAccuracy}m`"/>
+            </LMarker>
             <LCircle v-if="myAccuracy" v-bind:lat-lng="myCoords" v-bind:radius="myAccuracy" v-bind:opacity="0.3" color="#ce5c00" v-bind:fillOpacity="0.10" fillColor="#ce5c00"/>
             
             <LMarker v-for="loc in locations" v-bind:key="loc.id" v-bind:lat-lng="loc.location" v-bind:icon="locIcon">
                 <LTooltip v-bind:content="loc.name"/>
             </LMarker>
 
-            <div class="controls-topright button-group stacked">
-                <button class="button expanded" v-on:click="togglePanel('about')">parkourdex v0.1</button>
+            <LMarker v-if="(mode == 'add')|(mode == 'addDetail')" v-bind:lat-lng="addPos" v-bind:icon="addIcon" v-bind:draggable="mode == 'add'" />
+            
+
+            <div class="controls-topright button-group stacked" v-show="mode == 'default'">
+                <button class="button expanded" v-on:click="togglePanel('about')">about</button>
                 <button class="button expanded" v-on:click="togglePanel('filters')">filters</button>
-                <button class="button expanded">add spot</button>
+                <button class="button expanded" v-on:click="toggleMode('add')">add spot</button>
                 <button class="button expanded" v-on:click="toggleGPS" v-bind:class="{ warning: gpsEnabled && !gpsConnected, success: gpsEnabled && gpsConnected }">find me</button>
+            </div>
+            <div class="controls-topright button-group stacked" v-show="mode == 'add'">
+                <button class="button expanded" v-on:click="toggleMode('addDetail')">save</button>
+                <button class="button expanded" v-on:click="toggleMode('default')">cancel</button>
             </div>
             <div class="controls-bottom callout alert" v-show="alertVisible">
                 <div>{{ alert }}</div>
                 <button class="close-button" aria-label="Dismiss alert" type="button" v-on:click="alertVisible = false">
                     <span aria-hidden="true">&times;</span>
                 </button>
+            </div>
+            <div class="controls-bottom callout success" v-show="mode == 'add'">
+                <div>Move the green pin to the exact spot you wish to add.</div>
             </div>
         </LMap>
     </div>
@@ -49,7 +62,7 @@
     .controls-topright {
         width: 150px;
         display: block;
-        position: absolute;
+        position: fixed;
         top: 1em;
         right: 1em;
         z-index: 2000;
@@ -57,11 +70,11 @@
 
     .controls-bottom {
         display: block;
-        position: absolute;
+        position: fixed;
         max-width: 800px;
         left: 1em;
         right: 1em;
-        bottom: 1em;
+        bottom: 8em;
         margin: 0 auto;
         z-index: 2000;
     }
@@ -73,6 +86,7 @@
 <script>
 
 import aboutPanel from './aboutPanel.vue';
+import editPanel from './editPanel.vue';
 import detailPanel from './detailPanel.vue';
 import filterPanel from './filterPanel.vue';
 import { fetchFeatureCategories } from './api.js';
@@ -86,12 +100,14 @@ import '../leaflet.scss';
 
 import gpsIconUrl from './assets/gps.svg';
 import locIconUrl from './assets/pin.svg';
+import newIconUrl from './assets/new.svg';
 
 
 export default {
     name: 'mainComponent',
     components: {
         aboutPanel,
+        editPanel,
         detailPanel,
         filterPanel,
         LMap,
@@ -123,6 +139,13 @@ export default {
                 iconAnchor: [16, 32],
                 popupAnchor: [0, -20],
             }),
+            addIcon: new L.Icon({
+                iconUrl: `${this.parkourdexUrl}${newIconUrl}`,
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -20],
+            }),
+
             myCoords: null,
             myAccuracy: null,
             panel: null,
@@ -135,6 +158,14 @@ export default {
             locations: [],
             alert: '',
             alertVisible: false,
+            mode: 'default',
+            addPos: null,
+            editLocation: {
+                id: null,
+                name: '',
+                description: '',
+                features: []
+            },
         };
     },
     computed: {
@@ -159,6 +190,17 @@ export default {
         showPanel: function (panel_id, source) {
             this.togglePanel(panel_id);
         },
+        toggleMode: function (mode) {
+            this.mode = mode;
+            if (mode == 'add') {
+                this.addPos = L.latLng(this.center.lat, this.center.lng);
+            } else if (mode == 'addDetail') {
+                this.togglePanel('edit');
+            } else if (mode == 'default') {
+                this.panelVisible = false;
+                this.updateWindow();
+            }
+        },
         togglePanel: function (panel_id) {
             this.panelVisible = (this.panel != panel_id) | (!this.panelVisible);
             this.panel = panel_id;
@@ -172,8 +214,6 @@ export default {
             } else {
                 this.gpsPosition = null;
                 this.gpsWatch = window.navigator.geolocation.watchPosition(function (pos) {
-                    vm.alert = `Position at ${pos.coords.latitude} ${pos.coords.longitude} acc ${pos.coords.accuracy}`;
-                    vm.alertVisible = true;
                     vm.gpsPosition = pos;
                     vm.myCoords = L.latLng(pos.coords.latitude, pos.coords.longitude);
                     vm.myAccuracy = pos.coords.accuracy / 2;

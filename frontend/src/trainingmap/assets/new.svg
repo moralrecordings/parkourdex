@@ -15,7 +15,7 @@
    id="svg4513"
    version="1.1"
    inkscape:version="0.92.2 2405546, 2018-03-11"
-   sodipodi:docname="pin.svg">
+   sodipodi:docname="new.svg">
   <defs
      id="defs4515" />
   <sodipodi:namedview
@@ -25,18 +25,18 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="5.656854"
-     inkscape:cx="29.829434"
-     inkscape:cy="20.277993"
+     inkscape:zoom="15.999999"
+     inkscape:cx="-6.5515455"
+     inkscape:cy="19.786771"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      units="px"
-     inkscape:window-width="1345"
-     inkscape:window-height="970"
-     inkscape:window-x="515"
-     inkscape:window-y="113"
-     inkscape:window-maximized="0"
+     inkscape:window-width="1920"
+     inkscape:window-height="1138"
+     inkscape:window-x="0"
+     inkscape:window-y="34"
+     inkscape:window-maximized="1"
      inkscape:snap-bbox="false">
     <inkscape:grid
        type="xygrid"
@@ -60,33 +60,27 @@
      id="layer1"
      transform="translate(0,-1020.3622)">
     <path
-       style="fill:#651208;fill-opacity:1;stroke:none;stroke-width:1.26315784"
+       style="fill:#4e9a06;fill-opacity:1;stroke:none;stroke-width:1.26315784"
        d="m 28,1032.3622 c 0,-6.6274 -5.372583,-12 -12,-12 -6.627417,0 -12,5.3726 -12,12 0.0053,2.5136 0.799861,4.9622 2.260742,7 l 9.739258,13 9.742185,-13 c 1.461728,-2.0385 2.254197,-4.487 2.257815,-7 z"
        id="path3680"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="csccccc" />
     <path
-       style="fill:#b6170f;fill-opacity:0.94117647;stroke:none;stroke-width:1.26315784"
-       d="M 16 0.98046875 C 9.903461 0.98046875 4.9815438 5.9017468 4.9804688 11.998047 C 4.9853688 14.306447 5.7145616 16.555634 7.0566406 18.427734 L 16 30.365234 L 24.945312 18.427734 C 26.287721 16.555634 27.015801 14.307 27.019531 12 C 27.019531 5.9028 22.097205 0.98046875 16 0.98046875 z M 16 8 A 4 4 0 0 1 20 12 A 4 4 0 0 1 16 16 A 4 4 0 0 1 12 12 A 4 4 0 0 1 16 8 z "
+       style="fill:#8ae234;fill-opacity:1;stroke:none;stroke-width:1.26315784"
+       d="m 16,0.98046875 c -6.096539,0 -11.0184562,4.92127805 -11.0195312,11.01757825 0.0049,2.3084 0.7340928,4.557587 2.0761718,6.429687 L 16,30.365234 24.945312,18.427734 C 26.287721,16.555634 27.015801,14.307 27.019531,12 27.019531,5.9028 22.097205,0.98046875 16,0.98046875 Z"
        transform="translate(0,1020.3622)"
-       id="path3680-3" />
-    <circle
+       id="path3680-3"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="scccccs" />
+    <path
+       style="opacity:1;fill:#4e9a06;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:1, 1;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 13 4 L 13 9 L 8 9 L 8 15 L 13 15 L 13 20 L 19 20 L 19 15 L 24 15 L 24 9 L 19 9 L 19 4 L 13 4 z "
+       transform="translate(0,1020.3622)"
+       id="rect835" />
+    <path
        style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:1, 1;stroke-dashoffset:0;stroke-opacity:1"
-       id="path886"
-       cx="16"
-       cy="1032.3622"
-       r="3" />
-    <circle
-       style="opacity:1;fill:#651208;fill-opacity:1;stroke:none;stroke-width:0.99999994;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:1.00000007, 1.00000007000000002;stroke-dashoffset:0;stroke-opacity:1"
-       id="path860"
-       cx="16"
-       cy="1032.3622"
-       r="5" />
-    <circle
-       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.99999982;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:1.00000001, 1.00000001;stroke-dashoffset:0;stroke-opacity:1"
-       id="path860-3"
-       cx="15.999999"
-       cy="1032.3622"
-       r="3.9999998" />
+       d="M 14 5 L 14 10 L 9 10 L 9 14 L 14 14 L 14 19 L 18 19 L 18 14 L 23 14 L 23 10 L 18 10 L 18 5 L 14 5 z "
+       transform="translate(0,1020.3622)"
+       id="rect818" />
   </g>
 </svg>

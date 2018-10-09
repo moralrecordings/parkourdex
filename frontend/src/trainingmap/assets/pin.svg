@@ -25,18 +25,18 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="45.254832"
-     inkscape:cx="18.769173"
-     inkscape:cy="19.273597"
+     inkscape:zoom="5.656854"
+     inkscape:cx="29.829434"
+     inkscape:cy="20.277993"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      units="px"
-     inkscape:window-width="1920"
-     inkscape:window-height="1172"
-     inkscape:window-x="1920"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
+     inkscape:window-width="1345"
+     inkscape:window-height="970"
+     inkscape:window-x="515"
+     inkscape:window-y="113"
+     inkscape:window-maximized="0"
      inkscape:snap-bbox="false">
     <inkscape:grid
        type="xygrid"
@@ -60,13 +60,13 @@
      id="layer1"
      transform="translate(0,-1020.3622)">
     <path
-       style="fill:#4e9a06;fill-opacity:1;stroke:none;stroke-width:1.26315784"
+       style="fill:#651208;fill-opacity:1;stroke:none;stroke-width:1.26315784"
        d="m 28,1032.3622 c 0,-6.6274 -5.372583,-12 -12,-12 -6.627417,0 -12,5.3726 -12,12 0.0053,2.5136 0.799861,4.9622 2.260742,7 l 9.739258,13 9.742185,-13 c 1.461728,-2.0385 2.254197,-4.487 2.257815,-7 z"
        id="path3680"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="csccccc" />
     <path
-       style="fill:#8ae234;fill-opacity:1;stroke:none;stroke-width:1.26315784"
+       style="fill:#b6170f;fill-opacity:0.94117647;stroke:none;stroke-width:1.26315784"
        d="M 16 0.98046875 C 9.903461 0.98046875 4.9815438 5.9017468 4.9804688 11.998047 C 4.9853688 14.306447 5.7145616 16.555634 7.0566406 18.427734 L 16 30.365234 L 24.945312 18.427734 C 26.287721 16.555634 27.015801 14.307 27.019531 12 C 27.019531 5.9028 22.097205 0.98046875 16 0.98046875 z M 16 8 A 4 4 0 0 1 20 12 A 4 4 0 0 1 16 16 A 4 4 0 0 1 12 12 A 4 4 0 0 1 16 8 z "
        transform="translate(0,1020.3622)"
        id="path3680-3" />
@@ -77,7 +77,7 @@
        cy="1032.3622"
        r="3" />
     <circle
-       style="opacity:1;fill:#4e9a06;fill-opacity:1;stroke:none;stroke-width:0.99999994;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:1.00000007, 1.00000007;stroke-dashoffset:0;stroke-opacity:1"
+       style="opacity:1;fill:#651208;fill-opacity:1;stroke:none;stroke-width:0.99999994;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:1.00000007, 1.00000007000000002;stroke-dashoffset:0;stroke-opacity:1"
        id="path860"
        cx="16"
        cy="1032.3622"
