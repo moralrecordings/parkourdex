@@ -2,7 +2,7 @@
 <div class="f6inject">
     <div class="off-canvas position-left" v-bind:class="{'is-open': panelVisible}">
         <aboutPanel v-if="panel == 'about'" v-on:showPanel="showPanel" v-bind:parkourdexUrl="parkourdexUrl"/>
-        <editPanel v-if="panel == 'edit'" v-on:showPanel="showPanel" v-on:toggleMode="toggleMode" v-bind:parkourdexUrl="parkourdexUrl"/>
+        <editPanel v-if="panel == 'edit'" v-on:showPanel="showPanel" v-on:toggleMode="toggleMode" v-bind:parkourdexUrl="parkourdexUrl" v-bind:features="features" v-bind:categories="categories"/>
         <detailPanel v-if="panel == 'detail'" v-on:showPanel="showPanel"/>
         <filterPanel v-if="panel == 'filters'" v-on:showPanel="showPanel" v-on:updateFilters="updateFilters" v-bind:options="filterOptions" v-bind:features="features" v-bind:categories="categories"/>
     </div>

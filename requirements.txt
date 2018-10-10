@@ -6,3 +6,4 @@ djangorestframework-gis==0.13
 psycopg2-binary==2.7.5
 django-extensions==2.1.2
 pillow==5.2.0
+social-auth-app-django==2.1.0
