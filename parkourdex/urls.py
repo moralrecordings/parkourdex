@@ -18,8 +18,7 @@ from django.urls import path, include
 
 from parkourdex.api_v1 import api_v1_router
 
-
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/v1/', include(api_v1_router.urls)),
+    path( 'admin/', admin.site.urls ),
+    path( 'api/v1/', include( api_v1_router.urls ) ),
 ]
