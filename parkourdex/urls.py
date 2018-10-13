@@ -20,5 +20,6 @@ from parkourdex.api_v1 import api_v1_router
 
 urlpatterns = [
     path( 'admin/', admin.site.urls ),
+    path( 'registration/', include( 'django_registration.backends.activation.urls' ) ), 
     path( 'api/v1/', include( api_v1_router.urls ) ),
 ]

@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_gis',
     'django_extensions',
+    'django_registration',
 ]
 
 MIDDLEWARE = [
@@ -83,6 +84,8 @@ CACHES = {'default': cache.config()}
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
+AUTHENTICATION_BACKENDS = ('parkourdex.auth.Backend',)
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -121,6 +124,9 @@ if DEBUG:
         '127.0.0.1:8080',
     ]
 CORS_ALLOW_CREDENTIALS = True
+
+# django_registration expiry
+ACCOUNT_ACTIVATION_DAYS = 7
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
