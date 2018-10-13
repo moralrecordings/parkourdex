@@ -15,7 +15,7 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 
 if not DEBUG:
-    ALLOWED_HOSTS = env('ALLOWED_DOMAINS', '').split(',')
+    ALLOWED_HOSTS = env('ALLOWED_HOSTS', '').split(',')
 else:
     ALLOWED_HOSTS = ['*']
 
@@ -102,7 +102,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-au'
 
 TIME_ZONE = 'UTC'
 
@@ -112,16 +112,23 @@ USE_L10N = True
 
 USE_TZ = True
 
-# cors whitelist for local development
-CORS_ORIGIN_WHITELIST = (
-    'localhost:8000',
-    'localhost:8080',
-    '127.0.0.1:8000',
-    '127.0.0.1:8080',
-)
+CORS_ORIGIN_WHITELIST = [host for host in ALLOWED_HOSTS]  
+if DEBUG:
+    CORS_ORIGIN_WHITELIST += [
+        'localhost:8000',
+        'localhost:8080',
+        '127.0.0.1:8000',
+        '127.0.0.1:8080',
+    ]
 CORS_ALLOW_CREDENTIALS = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAdminUser'
+    )
+}
