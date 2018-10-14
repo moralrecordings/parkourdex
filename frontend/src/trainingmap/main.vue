@@ -10,16 +10,16 @@
     <div class="off-canvas-content has-transition-push has-position-left grid-y grid-frame" v-bind:class="{'is-open-left': panelVisible}">
         <LMap ref="map" v-bind:attributionControl="false" v-bind:zoom="zoom" v-bind:center="center" v-bind:options="options">
             <LTileLayer v-bind:url="basemapUrl"/>
-            <LMarker v-if="myCoords" v-bind:lat-lng="myCoords" v-bind:icon="myIcon">
+            <LMarker v-if="myCoords && filterOptions.showMyLocation" v-bind:lat-lng="myCoords" v-bind:icon="myIcon">
                 <LTooltip v-bind:content="`(${myCoords.lat}, ${myCoords.lng}) ±${myAccuracy}m`"/>
             </LMarker>
-            <LCircle v-if="myAccuracy" v-bind:lat-lng="myCoords" v-bind:radius="myAccuracy" v-bind:opacity="0.3" color="#ce5c00" v-bind:fillOpacity="0.10" fillColor="#ce5c00"/>
+            <LCircle v-if="myAccuracy && filterOptions.showMyLocation" v-bind:lat-lng="myCoords" v-bind:radius="myAccuracy" v-bind:opacity="0.3" color="#ce5c00" v-bind:fillOpacity="0.10" fillColor="#ce5c00"/>
             
             <LMarker v-for="loc in locations" v-bind:key="loc.id" v-bind:lat-lng="loc.location" v-bind:icon="locIcon">
                 <LTooltip v-bind:content="loc.name"/>
             </LMarker>
 
-            <LMarker v-if="(mode == 'add')|(mode == 'addDetail')" v-bind:lat-lng="addPos" v-bind:icon="addIcon" v-bind:draggable="mode == 'add'" />
+            <LMarker v-if="(mode == 'add')||(mode == 'addDetail')" v-bind:lat-lng="addPos" v-bind:icon="addIcon" v-bind:draggable="mode == 'add'" />
             
 
             <div class="controls-topright button-group stacked" v-show="mode == 'default'">
@@ -154,7 +154,13 @@ export default {
             panel: null,
             panelVisible: false,
             filterOptions: {
-                showAll: true
+                showAll: true,
+                showUntagged: true,
+                showMyLocation: true,
+                showSpots: true,
+                showVisitedSpots: true,
+                showFavourites: true,
+                showShortlist: true,
             },
             categories: [],
             features: [],
@@ -246,14 +252,15 @@ export default {
             } else if (type == 'feature') {
                 vm.features[index].enabled = state;
             } else if (type == 'options') {
+                vm.filterOptions[index] = state;
                 if (index == 'showAll') {
-                    vm.filterOptions[index] = state;
                     vm.categories.forEach(function (el) {
                         el.enabled = state;
                     });
                     vm.features.forEach(function (el) {
                         el.enabled = state;
                     });
+                    vm.filterOptions.showUntagged = state;
                 }
             }
         },

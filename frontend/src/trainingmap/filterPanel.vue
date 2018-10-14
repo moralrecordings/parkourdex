@@ -1,9 +1,90 @@
 <template>
     <div class="grid-container full">
-        <h3>Filters</h3>
+        <h3>Legend</h3>
         <div class="grid-x">
             <div class="cell auto">
-                <label for="swShowAll">Show all</label>
+                <label for="swMyLocation">
+                    <img src="./assets/gps.svg"/> My location
+                </label>
+            </div>
+            <div class="cell shrink">
+                <div class="switch small">
+                    <input class="switch-input" type="checkbox" id="swMyLocation" name="swMyLocation" v-model="options.showMyLocation" v-on:change="$emit('updateFilters', 'options', 'showMyLocation', options.showMyLocation)">
+                    <label class="switch-paddle" for="swMyLocation">
+                        <span class="show-for-sr">My location</span>
+                    </label>
+                </div> 
+            </div>
+        </div>
+        <div class="grid-x">
+            <div class="cell auto">
+                <label for="swSpots">
+                    <img src="./assets/pin.svg"/> Training spot
+                </label>
+            </div>
+            <div class="cell shrink">
+                <div class="switch small">
+                    <input class="switch-input" type="checkbox" id="swSpots" name="swSpots" v-model="options.showSpots" v-on:change="$emit('updateFilters', 'options', 'showSpots', options.showSpots)">
+                    <label class="switch-paddle" for="swSpots">
+                        <span class="show-for-sr">Training spot</span>
+                    </label>
+                </div> 
+            </div>
+        </div>
+        <div class="grid-x">
+            <div class="cell auto">
+                <label for="swVisitedSpots">
+                    <img src="./assets/visit.svg"/> Visited training spot
+                </label>
+            </div>
+            <div class="cell shrink">
+                <div class="switch small">
+                    <input class="switch-input" type="checkbox" id="swVisitedSpots" name="swVisitedSpots" v-model="options.showVisitedSpots" v-on:change="$emit('updateFilters', 'options', 'showVisitedSpots', options.showVisitedSpots)">
+                    <label class="switch-paddle" for="swVisitedSpots">
+                        <span class="show-for-sr">Visited training spot</span>
+                    </label>
+                </div> 
+            </div>
+        </div>
+ 
+        <div class="grid-x">
+            <div class="cell auto">
+                <label for="swFavourites">
+                    <img src="./assets/fav.svg"/> Favourites
+                </label>
+            </div>
+            <div class="cell shrink">
+                <div class="switch small">
+                    <input class="switch-input" type="checkbox" id="swFavourites" name="swFavourites" v-model="options.showFavourites" v-on:change="$emit('updateFilters', 'options', 'showFavourites', options.showFavourites)">
+                    <label class="switch-paddle" for="swFavourites">
+                        <span class="show-for-sr">Favourites</span>
+                    </label>
+                </div> 
+            </div>
+        </div>
+
+        <div class="grid-x">
+            <div class="cell auto">
+                <label for="swShortlist">
+                    <img src="./assets/short.svg"/> Shortlist
+                </label>
+            </div>
+            <div class="cell shrink">
+                <div class="switch small">
+                    <input class="switch-input" type="checkbox" id="swShortlist" name="swShortlist" v-model="options.showShortlist" v-on:change="$emit('updateFilters', 'options', 'showShortlist', options.showShortlist)">
+                    <label class="switch-paddle" for="swShortlist">
+                        <span class="show-for-sr">Shortlist</span>
+                    </label>
+                </div> 
+            </div>
+        </div>
+
+
+
+        <h3>Features</h3>
+        <div class="grid-x">
+            <div class="cell auto">
+                <label for="swShowAll" class="category">Show all</label>
             </div>
             <div class="cell shrink">
                 <div class="switch small">
@@ -15,7 +96,7 @@
             </div>
         </div>
         <div v-for="(cat, catIndex) in categories" v-bind:key="cat.id">
-            <div class="grid-x" style="border: 1px solid black">
+            <div class="grid-x">
                 <div class="cell auto">
                     <label v-bind:for="`swCategory_${ cat.id }`" class="category">{{ cat.name }}</label>
                 </div>
@@ -29,7 +110,7 @@
                 </div>
             </div>
             <div class="grid-container full">
-                <div v-for="feat in cat.features" v-bind:key="feat" class="grid-x" style="border: 1px solid black">
+                <div v-for="feat in cat.features" v-bind:key="feat" class="grid-x">
                     <div class="cell auto">
                         <label v-bind:for="`swFeature_${ features[feat].id }`">{{ features[feat].name }}</label>
                     </div>
@@ -42,6 +123,19 @@
                         </div> 
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="grid-x">
+            <div class="cell auto">
+                <label for="swUntagged" class="category">Untagged</label>
+            </div>
+            <div class="cell shrink">
+                <div class="switch small">
+                    <input class="switch-input" type="checkbox" id="swUntagged" name="swUntagged" v-model="options.showUntagged" v-on:change="$emit('updateFilters', 'options', 'showUntagged', options.showUntagged)">
+                    <label class="switch-paddle" for="swUntagged">
+                        <span class="show-for-sr">Untagged</span>
+                    </label>
+                </div> 
             </div>
         </div>
         <button class="close-button" type="button" v-on:click="$emit('showPanel', 'filters', null)"><span aria-hidden="true">×</span></button>
