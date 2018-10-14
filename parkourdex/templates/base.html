@@ -4,8 +4,31 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0,maximum-scale=1.0,minimal-ui,user-scalable=no">
+        <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation.min.css">
+        {% block extrastyle %}{% endblock %}
+        <style>
+body {
+    background-color: #e6e6e6;
+}
+
+.button {
+    background-color: #b61708;
+    font-weight: bold;
+}
+
+.button:focus, .button:hover {
+    background-color: #9b1407;
+}
+
+        </style>
         <title>{% block title %}{% endblock %}</title>
     </head>
     <body>
-
+        <div class="grid-container" style="max-width: 480px">
+            <div class="grid-x text-center">
+                <div class="cell"><h3>{% block content_title %}{% endblock %}</h3></div>
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </body>
 </html>

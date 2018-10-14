@@ -23,6 +23,7 @@ else:
 # Application definition
 
 INSTALLED_APPS = [
+    'parkourdex',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
