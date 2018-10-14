@@ -4,13 +4,14 @@ from django.contrib.auth.backends import ModelBackend
 UserModel = get_user_model()
 
 class Backend( ModelBackend ):
-    def authenticate( self, username=None, password=None, **kwargs ):
+    def authenticate( self, request, username=None, password=None, **kwargs ):
         if username is None:
             username = kwargs.get( UserModel.USERNAME_FIELD )
         try:
+            user = None
             if '@' in username:
-                user = UserModel.objects.get(email=username)
-            else:
+                user = UserModel.objects.filter(email=username).first()
+            if user is None:
                 user = UserModel._default_manager.get_by_natural_key(username)
         except UserModel.DoesNotExist:
             # Run the default password hasher once to reduce the timing

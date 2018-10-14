@@ -22,16 +22,20 @@ class LoginView( APIView ):
 
 
     def post( self, request, format=None ):
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate( request, username, password )
-        if user is not None:
-            login( request, user )
-            result = {
-                'username': user.username,
-                'email': user.email
-            }
-            return Response( result )
+        if 'username' in request.data and 'password' in request.data:
+            username = request.data['username']
+            password = request.data['password']
+            user = authenticate( request=request, username=username, password=password )
+            if user is not None:
+                login( request, user )
+                result = {
+                    'username': user.username,
+                    'email': user.email
+                }
+                return Response( result )
+            return Response( {
+                'error': 'The username and password do not match.'
+            }, status=403 )
         return Response( {
-            'error': 'The username and password do not match.'
-        }, status=403 )
+            'error': 'Must specify username and a password.'
+        }, status=400 )

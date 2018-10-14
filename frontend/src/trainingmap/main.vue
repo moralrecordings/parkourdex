@@ -1,7 +1,7 @@
 <template>
 <div class="f6inject">
     <div class="off-canvas position-left" v-bind:class="{'is-open': panelVisible}">
-        <aboutPanel v-if="panel == 'about'" v-on:showPanel="showPanel" v-bind:parkourdexUrl="parkourdexUrl"/>
+        <aboutPanel v-if="panel == 'about'" v-on:showPanel="showPanel" v-bind:parkourdexUrl="parkourdexUrl" v-on:login="updateLogin"/>
         <editPanel v-if="panel == 'edit'" v-on:showPanel="showPanel" v-on:toggleMode="toggleMode" v-bind:parkourdexUrl="parkourdexUrl" v-bind:features="features" v-bind:categories="categories"/>
         <detailPanel v-if="panel == 'detail'" v-on:showPanel="showPanel"/>
         <filterPanel v-if="panel == 'filters'" v-on:showPanel="showPanel" v-on:updateFilters="updateFilters" v-bind:options="filterOptions" v-bind:features="features" v-bind:categories="categories"/>
@@ -22,7 +22,7 @@
             
 
             <div class="controls-topright button-group stacked" v-show="mode == 'default'">
-                <button class="button expanded" v-on:click="togglePanel('about')">about</button>
+                <button class="button expanded" v-on:click="togglePanel('about')">login</button>
                 <button class="button expanded" v-on:click="togglePanel('filters')">filters</button>
                 <button class="button expanded" v-on:click="toggleMode('add')">add spot</button>
                 <button class="button expanded" v-on:click="toggleGPS" v-bind:class="{ warning: gpsEnabled && !gpsConnected, success: gpsEnabled && gpsConnected }">find me</button>
@@ -89,8 +89,7 @@ import aboutPanel from './aboutPanel.vue';
 import editPanel from './editPanel.vue';
 import detailPanel from './detailPanel.vue';
 import filterPanel from './filterPanel.vue';
-import { fetchFeatureCategories } from './api.js';
-import { fetchLocations } from './api.js';
+import { fetchFeatureCategories, fetchLocations, fetchLogin } from './api.js';
 
 import { LMap, LTileLayer, LMarker, LTooltip, LCircle } from 'vue2-leaflet';
 import L from 'leaflet';
@@ -165,6 +164,11 @@ export default {
                 name: '',
                 description: '',
                 features: []
+            },
+            login: {
+                email: null,
+                username: null,
+                csrftoken: null
             },
         };
     },
@@ -247,15 +251,25 @@ export default {
                 }
             }
         },
+        updateLogin: function (creds) {
+            this.login.email = creds.email
+            this.login.username = creds.username;
+            if (this.panel == 'about') {
+                this.panelVisible = false;
+            }
+        },
         update: function () {
             var vm = this;
-            fetchFeatureCategories(this.parkourdexUrl, function (data) {
+            fetchLogin(vm.parkourdexUrl, vm.updateLogin, function (error) {
+                console.log(error);
+            });
+            fetchFeatureCategories(vm.parkourdexUrl, function (data) {
                 vm.features = data.features;
                 vm.categories = data.categories;
             }, function (error) {
                 console.log(error);
             });
-            fetchLocations(this.parkourdexUrl, function (data) {
+            fetchLocations(vm.parkourdexUrl, function (data) {
                 vm.locations = data;
             }, function (error) {
                 console.log(error);

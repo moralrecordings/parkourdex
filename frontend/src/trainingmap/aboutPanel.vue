@@ -3,15 +3,22 @@
         <div class="text-center" style="margin-bottom: 1em;">
             <img v-bind:src="logoUrl" title="parkourdex"/>
         </div>
-        <div class="grid-x">
-            <input type="text" placeholder="Username" v-model="username"/>
+        <div class="grid-x" v-if="errorMessage">
+            <div class="callout alert">
+                {{ errorMessage }}
+            </div>
         </div>
-        <div class="grid-x">
-            <input type="password" placeholder="Password" v-model="password"/>
-        </div>
-        <div class="grid-x">
-            <button class="button expanded">Sign in</button>
-        </div>
+        <form v-on:submit.prevent="signin">
+            <div class="grid-x">
+                <input type="text" name="username" placeholder="Username" v-model="username"/>
+            </div>
+            <div class="grid-x">
+                <input type="password" name="password" placeholder="Password" v-model="password"/>
+            </div>
+            <div class="grid-x">
+                <input type="submit" class="button expanded" value="Sign in" />
+            </div>
+        </form>
         <div class="text-center">
             <a target="_blank" v-bind:href="`${parkourdexUrl}/password_reset/`" >Forgot your password?</a>
             <hr style="width: 100%"/>
@@ -36,6 +43,7 @@
 
 import logoUrl from './assets/logo.svg';
 
+import { submitLogin } from './api.js';
 
 
 export default {
@@ -44,14 +52,27 @@ export default {
         return {
             username: '',
             password: '',
-            logoUrl: `${this.parkourdexUrl}${logoUrl}`
+            logoUrl: `${this.parkourdexUrl}${logoUrl}`,
+            errorMessage: null,
         };
     },
     props: {
         parkourdexUrl: String,
+        login: Object,
     },
     methods: {
-
+        signin: function () {
+            var vm = this;
+            this.errorMessage = null;
+            submitLogin(vm.parkourdexUrl, JSON.stringify({
+                username: vm.username,
+                password: vm.password
+            }), function (data) {
+                vm.$emit('login', data);
+            }, function (error) {
+                vm.errorMessage = error;
+            });
+        }
     },
     mounted: function () {
 

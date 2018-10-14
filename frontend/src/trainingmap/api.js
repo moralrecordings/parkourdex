@@ -1,21 +1,44 @@
 import L from 'leaflet';
+import Cookies from 'js-cookie';
 
 var fetchWrap = function (path, base_url, success, failure) {
-    fetch(`${base_url}${path}`, {
-        credentials: 'include',   
+    return submitWrap(path, base_url, 'GET', undefined, success, failure);
+};
+
+var submitWrap = function (path, base_url, method, body, success, failure) {
+    var csrftoken = Cookies.get('csrftoken', {
+        domain: base_url.split('/')[2]   
+    });
+
+    return fetch(`${base_url}${path}`, {
+        credentials: 'include',
+        method: method,
+        body: body,
+        headers: {
+            'X-CSRFToken': csrftoken,
+            'Content-Type': 'application/json'
+        },
     }).then(function (response) {
-        if (!response.ok) {
-            throw new Error(`Remote response was a ${response.status}`);
-        }
-        var contentType = response.headers.get("Content-Type");
-        if (!(contentType && contentType.includes("application/json"))) {
+        var contentType = response.headers.get('Content-Type');
+        if ((contentType && contentType.includes('application/json'))) {
+            if (!response.ok) {
+                return response.json().then(function (error) {
+                    failure(error['error']);  
+                });
+            }
+        } else {
+            if (!response.ok) {
+                throw new Error(`Remote response was a ${response.status}`);
+            }
             throw new TypeError('Remote response did not have the content type application/json');
         }
-        response.json().then(success);
+
+        return response.json().then(success);
     }).catch(function (error) {
-        failure(error);
+        return failure(error);
     });
 };
+
 
 var fetchFeatureCategories = function (base_url, success, failure) {
     var formatter = function (raw_data) {
@@ -62,7 +85,17 @@ var fetchLocations = function (base_url, success, failure) {
     fetchWrap('/api/v1/location.json', base_url, formatter, failure);
 };
 
+var fetchLogin = function (base_url, success, failure) {
+    fetchWrap('/api/v1/login.json', base_url, success, failure);
+};
+
+var submitLogin = function (base_url, body, success, failure) {
+    submitWrap('/api/v1/login.json', base_url, 'POST', body, success, failure); 
+};
+
 export {
     fetchFeatureCategories,
     fetchLocations,
+    fetchLogin,
+    submitLogin,
 }

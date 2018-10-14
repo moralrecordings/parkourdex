@@ -6,6 +6,7 @@ from rest_framework.decorators import detail_route, list_route, renderer_classes
 
 from locations.models import Feature, FeatureCategory, Location
 
+from locations.permissions import AuthorOrAdmin
 
 class FeatureSerializer( serializers.ModelSerializer ):
     class Meta:
@@ -16,6 +17,7 @@ class FeatureSerializer( serializers.ModelSerializer ):
 class FeatureViewSet( viewsets.ReadOnlyModelViewSet ):
     queryset = Feature.objects.order_by( 'name' )
     serializer_class = FeatureSerializer
+    permission_classes = (AuthorOrAdmin,)
 
 
 class FeatureInnerListSerializer( serializers.ListSerializer ):
@@ -40,14 +42,34 @@ class FeatureCategorySerializer( serializers.ModelSerializer ):
 class FeatureCategoryViewSet( viewsets.ReadOnlyModelViewSet ):
     queryset = FeatureCategory.objects.prefetch_related( 'features' ).order_by( 'name' )
     serializer_class = FeatureCategorySerializer
+    permission_classes = (AuthorOrAdmin,)
 
 
-class LocationSerializer( serializers.ModelSerializer ):
+class LocationListSerializer( serializers.ModelSerializer ):
     class Meta:
         model = Location
         fields = ('id', 'name', 'features', 'location')
 
 
-class LocationViewSet( viewsets.ReadOnlyModelViewSet ):
+class LocationSerializer( serializers.ModelSerializer ):
+    class Meta:
+        model = Location
+        fields = ('id', 'name', 'features', 'location', 'description')
+
+
+class LocationViewSet( viewsets.ModelViewSet ):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
+    list_serializer_class = LocationListSerializer
+    permission_classes = (AuthorOrAdmin,)
+
+    def get_serializer( self, *args, **kwargs ):
+        if 'many' in kwargs:
+            serializer_class = self.list_serializer_class
+        else:
+            serializer_class = self.get_serializer_class()
+        kwargs['context'] = self.get_serializer_context()
+        return serializer_class( *args, **kwargs )
+
+
+
