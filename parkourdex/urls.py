@@ -1,25 +1,15 @@
-"""parkourdex URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/2.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
+from django.contrib.auth import views as auth
 from django.urls import path, include
 
 from parkourdex.api_v1 import api_v1_router
 
 urlpatterns = [
-    path( 'admin/', admin.site.urls ),
-    path( 'registration/', include( 'django_registration.backends.activation.urls' ) ), 
     path( 'api/v1/', include( api_v1_router.urls ) ),
+    path( 'admin/', admin.site.urls ),
+    path( '', include( 'django_registration.backends.activation.urls' ) ),
+    path( 'password_reset/', auth.PasswordResetView.as_view(), name='password_reset' ),
+    path( 'password_reset/done/', auth.PasswordResetDoneView.as_view(), name='password_reset_done' ),
+    path( 'reset/<uidb64>/<token>/', auth.PasswordResetConfirmView.as_view(), name='password_reset_confirm' ),
+    path( 'reset/done/', auth.PasswordResetCompleteView.as_view(), name='password_reset_complete' ),
 ]
