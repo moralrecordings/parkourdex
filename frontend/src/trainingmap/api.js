@@ -93,9 +93,15 @@ var submitLogin = function (base_url, body, success, failure) {
     submitWrap('/api/v1/login.json', base_url, 'POST', body, success, failure); 
 };
 
+var submitLogout = function (base_url, success, failure) {
+    submitWrap('/api/v1/logout.json', base_url, 'POST', undefined, success, failure); 
+};
+
+
 export {
     fetchFeatureCategories,
     fetchLocations,
     fetchLogin,
     submitLogin,
+    submitLogout,
 }

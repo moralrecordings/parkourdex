@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -39,3 +39,14 @@ class LoginView( APIView ):
         return Response( {
             'error': 'Must specify username and a password.'
         }, status=400 )
+
+
+class LogoutView( APIView ):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post( self, request, format=None ):
+        logout( request )
+        return Response( {
+            'username': None,
+            'email': None,
+        } )

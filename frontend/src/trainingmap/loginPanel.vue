@@ -47,7 +47,7 @@ import { submitLogin } from './api.js';
 
 
 export default {
-    name: 'aboutPanel',
+    name: 'loginPanel',
     data: function () {
         return {
             username: '',

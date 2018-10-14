@@ -1,7 +1,8 @@
 <template>
 <div class="f6inject">
     <div class="off-canvas position-left" v-bind:class="{'is-open': panelVisible}">
-        <aboutPanel v-if="panel == 'about'" v-on:showPanel="showPanel" v-bind:parkourdexUrl="parkourdexUrl" v-on:login="updateLogin"/>
+        <loginPanel v-if="panel == 'login'" v-on:showPanel="showPanel" v-bind:parkourdexUrl="parkourdexUrl" v-on:login="updateLogin"/>
+        <settingsPanel v-if="panel == 'settings'" v-on:showPanel="showPanel" v-bind:parkourdexUrl="parkourdexUrl" v-bind:user="login" v-on:login="updateLogin"/>
         <editPanel v-if="panel == 'edit'" v-on:showPanel="showPanel" v-on:toggleMode="toggleMode" v-bind:parkourdexUrl="parkourdexUrl" v-bind:features="features" v-bind:categories="categories"/>
         <detailPanel v-if="panel == 'detail'" v-on:showPanel="showPanel"/>
         <filterPanel v-if="panel == 'filters'" v-on:showPanel="showPanel" v-on:updateFilters="updateFilters" v-bind:options="filterOptions" v-bind:features="features" v-bind:categories="categories"/>
@@ -22,14 +23,15 @@
             
 
             <div class="controls-topright button-group stacked" v-show="mode == 'default'">
-                <button class="button expanded" v-on:click="togglePanel('about')">login</button>
-                <button class="button expanded" v-on:click="togglePanel('filters')">filters</button>
-                <button class="button expanded" v-on:click="toggleMode('add')">add spot</button>
-                <button class="button expanded" v-on:click="toggleGPS" v-bind:class="{ warning: gpsEnabled && !gpsConnected, success: gpsEnabled && gpsConnected }">find me</button>
+                <button v-if="!loggedIn" class="button expanded" v-on:click="togglePanel('login')">Sign in</button>
+                <button v-else class="button expanded" v-on:click="togglePanel('settings')">Settings</button>
+                <button class="button expanded" v-bind:class="{ disabled: !loggedIn }" v-on:click="toggleMode('add')">Add spot</button>
+                <button class="button expanded" v-on:click="togglePanel('filters')">Filters</button>
+                <button class="button expanded" v-on:click="toggleGPS" v-bind:class="{ warning: gpsEnabled && !gpsConnected, success: gpsEnabled && gpsConnected }">Find me</button>
             </div>
             <div class="controls-topright button-group stacked" v-show="mode == 'add'">
-                <button class="button expanded" v-on:click="toggleMode('addDetail')">save</button>
-                <button class="button expanded" v-on:click="toggleMode('default')">cancel</button>
+                <button class="button expanded" v-on:click="toggleMode('addDetail')">Save</button>
+                <button class="button expanded" v-on:click="toggleMode('default')">Cancel</button>
             </div>
             <div class="controls-bottom callout alert" v-show="alertVisible">
                 <div>{{ alert }}</div>
@@ -85,7 +87,8 @@
 </style>
 <script>
 
-import aboutPanel from './aboutPanel.vue';
+import loginPanel from './loginPanel.vue';
+import settingsPanel from './settingsPanel.vue';
 import editPanel from './editPanel.vue';
 import detailPanel from './detailPanel.vue';
 import filterPanel from './filterPanel.vue';
@@ -105,7 +108,8 @@ import newIconUrl from './assets/new.svg';
 export default {
     name: 'mainComponent',
     components: {
-        aboutPanel,
+        loginPanel,
+        settingsPanel,
         editPanel,
         detailPanel,
         filterPanel,
@@ -168,11 +172,13 @@ export default {
             login: {
                 email: null,
                 username: null,
-                csrftoken: null
             },
         };
     },
     computed: {
+        loggedIn: function () {
+            return this.login.username != null;
+        },
         gpsEnabled: function () {
             return this.gpsWatch != null;
         },
@@ -254,7 +260,7 @@ export default {
         updateLogin: function (creds) {
             this.login.email = creds.email
             this.login.username = creds.username;
-            if (this.panel == 'about') {
+            if ((this.panel == 'login')|(this.panel == 'settings')) {
                 this.panelVisible = false;
             }
         },

@@ -2,7 +2,7 @@ from django.conf.urls import include, url
 from rest_framework import routers, viewsets
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from parkourdex.views import LoginView
+from parkourdex.views import LoginView, LogoutView
 from locations.api_v1 import FeatureViewSet, FeatureCategoryViewSet, LocationViewSet
 
 # borrowed from https://stackoverflow.com/questions/18818179/routing-api-views-in-django-rest-framework#18823752
@@ -58,6 +58,7 @@ class Router(routers.DefaultRouter):
 
 api_v1_router = Router()
 api_v1_router.register('login', LoginView, base_name='login')
+api_v1_router.register('logout', LogoutView, base_name='logout')
 api_v1_router.register('feature', FeatureViewSet)
 api_v1_router.register('feature_category', FeatureCategoryViewSet)
 api_v1_router.register('location', LocationViewSet)
