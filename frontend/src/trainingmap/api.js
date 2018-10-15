@@ -85,6 +85,10 @@ var fetchLocations = function (base_url, success, failure) {
     fetchWrap('/api/v1/location.json', base_url, formatter, failure);
 };
 
+var fetchDetail = function (base_url, id, success, failure) {
+    fetchWrap(`/api/v1/location/${id}.json`, base_url, success, failure);
+};
+
 var fetchLogin = function (base_url, success, failure) {
     fetchWrap('/api/v1/login.json', base_url, success, failure);
 };
@@ -101,6 +105,7 @@ var submitLogout = function (base_url, success, failure) {
 export {
     fetchFeatureCategories,
     fetchLocations,
+    fetchDetail,
     fetchLogin,
     submitLogin,
     submitLogout,

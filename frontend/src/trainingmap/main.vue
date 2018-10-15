@@ -4,7 +4,7 @@
         <loginPanel v-if="panel == 'login'" v-on:showPanel="showPanel" v-bind:parkourdexUrl="parkourdexUrl" v-on:login="updateLogin"/>
         <settingsPanel v-if="panel == 'settings'" v-on:showPanel="showPanel" v-bind:parkourdexUrl="parkourdexUrl" v-bind:user="login" v-on:login="updateLogin"/>
         <editPanel v-if="panel == 'edit'" v-on:showPanel="showPanel" v-on:toggleMode="toggleMode" v-bind:parkourdexUrl="parkourdexUrl" v-bind:features="features" v-bind:categories="categories"/>
-        <detailPanel v-if="panel == 'detail'" v-on:showPanel="showPanel"/>
+        <detailPanel v-if="panel == 'detail'" v-on:showPanel="showPanel" v-bind:features="features" v-bind:detail="locationDetail"/>
         <filterPanel v-if="panel == 'filters'" v-on:showPanel="showPanel" v-on:updateFilters="updateFilters" v-bind:options="filterOptions" v-bind:features="features" v-bind:categories="categories"/>
     </div>
     <div class="off-canvas-content has-transition-push has-position-left grid-y grid-frame" v-bind:class="{'is-open-left': panelVisible}">
@@ -15,7 +15,7 @@
             </LMarker>
             <LCircle v-if="myAccuracy && filterOptions.showMyLocation" v-bind:lat-lng="myCoords" v-bind:radius="myAccuracy" v-bind:opacity="0.3" color="#ce5c00" v-bind:fillOpacity="0.10" fillColor="#ce5c00"/>
             
-            <LMarker v-for="loc in locations" v-bind:key="loc.id" v-bind:lat-lng="loc.location" v-bind:icon="locIcon">
+            <LMarker v-for="loc in locations" v-on:click="getDetail(loc.id)" v-bind:key="loc.id" v-bind:lat-lng="loc.location" v-bind:icon="locIcon">
                 <LTooltip v-bind:content="loc.name"/>
             </LMarker>
 
@@ -25,7 +25,8 @@
             <div class="controls-topright button-group stacked" v-show="mode == 'default'">
                 <button v-if="!loggedIn" class="button expanded" v-on:click="togglePanel('login')">Sign in</button>
                 <button v-else class="button expanded" v-on:click="togglePanel('settings')">Settings</button>
-                <button class="button expanded" v-bind:class="{ disabled: !loggedIn }" v-on:click="toggleMode('add')">Add spot</button>
+                <button v-if="loggedIn" class="button expanded" v-on:click="toggleMode('add')">Add spot</button>
+                <button v-else class="button expanded disabled">Add spot</button>
                 <button class="button expanded" v-on:click="togglePanel('filters')">Filters</button>
                 <button class="button expanded" v-on:click="toggleGPS" v-bind:class="{ warning: gpsEnabled && !gpsConnected, success: gpsEnabled && gpsConnected }">Find me</button>
             </div>
@@ -92,7 +93,7 @@ import settingsPanel from './settingsPanel.vue';
 import editPanel from './editPanel.vue';
 import detailPanel from './detailPanel.vue';
 import filterPanel from './filterPanel.vue';
-import { fetchFeatureCategories, fetchLocations, fetchLogin } from './api.js';
+import { fetchFeatureCategories, fetchLocations, fetchLogin, fetchDetail } from './api.js';
 
 import { LMap, LTileLayer, LMarker, LTooltip, LCircle } from 'vue2-leaflet';
 import L from 'leaflet';
@@ -165,6 +166,7 @@ export default {
             categories: [],
             features: [],
             locations: [],
+            locationDetail: null,
             alert: '',
             alertVisible: false,
             mode: 'default',
@@ -202,6 +204,16 @@ export default {
     methods: {
         getMapboxUrl: function (layer_id) {
             return `https://api.mapbox.com/v4/${layer_id}/{z}/{x}/{y}.png256?access_token=${this.mapboxToken}`;
+        },
+        getDetail: function (location_id) {
+            var vm = this;
+            fetchDetail(vm.parkourdexUrl, location_id, function (data) {
+                vm.locationDetail = data;
+                vm.panel = 'detail';
+                vm.panelVisible = true;
+            }, function (error) {
+                console.log(error);
+            });
         },
         showPanel: function (panel_id, source) {
             this.togglePanel(panel_id);

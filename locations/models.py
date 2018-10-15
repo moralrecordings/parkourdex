@@ -59,6 +59,8 @@ class Location( Base ):
     description = models.TextField()
     features = models.ManyToManyField( Feature, related_name='locations' )
 
+    def __str__( self ):
+        return self.name
 
 class Comment( Base ):
     location = models.ForeignKey( Location, null=True, related_name='comments', on_delete=models.SET_NULL )

@@ -1,6 +1,14 @@
 <template>
-    <div class="grid-container full">
-        <h3>White Walls</h3>
+    <div v-if="detail" class="grid-container full">
+        <h3>{{ detail.name }}</h3>
+        <div class="grid-x">
+            <template v-for="feature in detail.features">
+                <img v-if="featureMap.get(feature) && featureMap.get(feature).icon" v-bind:src="`${parkourdexUrl}${featureMap.get(feature).icon}`" v-bind:title="featureMap.get(feature).name" />
+            </template>
+        </div>
+        <div class="grid-x">
+            {{ detail.description }}
+        </div>
         <div class="grid-x">
             <div class="cell shrink">
                 <div class="switch small">
@@ -26,11 +34,20 @@ export default {
     name: 'detailPanel',
     data: function () {
         return {
-
+            
         };
     },
+    computed: {
+        featureMap: function () {
+            return new Map(this.features.map(function (el) {
+                return [el.id, el];   
+            }));
+        }
+    },
     props: {
-        
+        parkourdexUrl: String,
+        features: Array,
+        detail: Object,
     },
     methods: {
 
