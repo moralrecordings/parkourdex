@@ -33,7 +33,7 @@
                 <a href="https://bitbucket.org/moralrecordings/parkourdex">Source code</a> - <a href="#">Terms of service</a> - <a href="mailto:abuse@parkourdex.org">Report abuse</a><br/>
             </small>
         </p>
-        <button class="close-button" type="button" v-on:click="$emit('showPanel', 'about', null)"><span aria-hidden="true">×</span></button>
+        <button class="close-button" type="button" v-on:click="$emit('showPanel', 'login', null)"><span aria-hidden="true">×</span></button>
     </div>
 </template>
 <style lang="scss">
