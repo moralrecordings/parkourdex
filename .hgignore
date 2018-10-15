@@ -11,3 +11,5 @@ doc/build
 node_modules
 frontend/dist
 .env
+media/**
+staticroot/**

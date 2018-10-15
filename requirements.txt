@@ -8,3 +8,4 @@ django-extensions==2.1.2
 pillow==5.2.0
 social-auth-app-django==2.1.0
 django-registration==3.0
+django-confy==1.0.4
