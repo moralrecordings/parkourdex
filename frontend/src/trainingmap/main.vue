@@ -15,7 +15,7 @@
             </LMarker>
             <LCircle v-if="myAccuracy && filterOptions.showMyLocation" v-bind:lat-lng="myCoords" v-bind:radius="myAccuracy" v-bind:opacity="0.3" color="#ce5c00" v-bind:fillOpacity="0.10" fillColor="#ce5c00"/>
             
-            <LMarker v-for="loc in locations" v-on:click="getDetail(loc.id)" v-bind:key="loc.id" v-bind:lat-lng="loc.location" v-bind:icon="locIcon">
+            <LMarker v-for="loc in filteredLocations" v-on:click="getDetail(loc.id)" v-bind:key="loc.id" v-bind:lat-lng="loc.location" v-bind:icon="locIcon">
                 <LTooltip v-bind:content="loc.name"/>
             </LMarker>
 
@@ -193,8 +193,24 @@ export default {
         gpsConnected: function () {
             return this.gpsPosition != null;
         },
+        featureMap: function () {
+            return new Map(this.features.map(function (el) {
+                return [el.id, el];
+            }));
+        },
         filteredLocations: function () {
-            return this.locations;
+            var vm = this;
+            return this.locations.filter(function (el) {
+                var featureStatus = false;
+                if ((el.features.length == 0)) {
+                    featureStatus = vm.filterOptions.showUntagged;
+                } else {
+                    featureStatus = el.features.some(function (fl) {
+                        return vm.featureMap.get(fl).enabled;
+                    });
+                }
+                return featureStatus;
+            });
         },
     },
     props: {

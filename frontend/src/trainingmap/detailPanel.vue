@@ -2,9 +2,11 @@
     <div v-if="detail" class="grid-container full">
         <h3>{{ detail.name }}</h3>
         <div class="grid-x">
-            <template v-for="feature in detail.features">
-                <img v-if="featureMap.get(feature) && featureMap.get(feature).icon" v-bind:src="`${parkourdexUrl}${featureMap.get(feature).icon}`" v-bind:title="featureMap.get(feature).name" />
-            </template>
+            <ul>
+                <li v-for="feature in detail.features">
+                    <img v-if="featureMap.get(feature) && featureMap.get(feature).icon" v-bind:src="`${parkourdexUrl}${featureMap.get(feature).icon}`" v-bind:title="featureMap.get(feature).name" /> {{ featureMap.get(feature).name }}
+                </li>
+            </ul>
         </div>
         <div class="grid-x">
             {{ detail.description }}
