@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}Activation failed{% endblock %}
+{% block content_title %}Activation failed?!{% endblock %}
+
+
+{% block content %}
+<p>{{ activation_error.message }}</p>
+
+{% endblock %}
+

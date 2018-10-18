@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}Welcome{% endblock %}
+{% block content_title %}Welcome!{% endblock %}
+
+
+{% block content %}
+<p>Your account has been successfully activated, you can now sign in to PARKOURDEX.</p>
+
+<a href="{% url 'map' %}" class="button expanded">Awww yiss</a>
+
+{% endblock %}
+

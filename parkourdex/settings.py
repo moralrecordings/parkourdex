@@ -6,19 +6,20 @@ from confy import env, database, cache
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
 
 
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
-SECRET_KEY = env('SECRET_KEY')
-DEBUG = env('DEBUG')
+SECRET_KEY = env( 'SECRET_KEY' )
+DEBUG = env( 'DEBUG' )
 
 if not DEBUG:
-    ALLOWED_HOSTS = env('ALLOWED_HOSTS', '').split(',')
+    ALLOWED_HOSTS = env( 'ALLOWED_HOSTS', '' ).split( ',' )
 else:
     ALLOWED_HOSTS = ['*']
 
+DEFAULT_FROM_EMAIL = env( 'DEFAULT_FROM_EMAIL' )
 
 # Application definition
 
@@ -165,9 +166,9 @@ ACCOUNT_ACTIVATION_DAYS = 7
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticroot')
+STATIC_ROOT = os.path.join( BASE_DIR, 'staticroot' )
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join( BASE_DIR, 'media' )
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
