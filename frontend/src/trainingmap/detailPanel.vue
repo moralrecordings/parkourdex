@@ -9,6 +9,23 @@
             </ul>
         </div>
         <div class="grid-x">
+            <div class="cell auto">
+                <gallery ref="gallery">
+                    <img src="./assets/photoblank.svg"/>
+                    <img src="./assets/photoblank.svg"/>
+                    <img src="./assets/photoblank.svg"/>
+                </gallery>
+            </div>
+        </div>
+        <div class="grid-x">
+            <div class="cell auto">
+                <button class="button small expanded" v-on:click="$refs.gallery.prev()">&lt;</button>
+            </div>
+            <div class="cell auto">
+                <button class="button small expanded" v-on:click="$refs.gallery.next()">&gt;</button>
+            </div>
+        </div>
+        <div class="grid-x">
             {{ detail.description }}
         </div>
         <div class="grid-x">
@@ -28,12 +45,19 @@
     </div>
 </template>
 <style lang="scss">
-
+.slide {
+    width: 100%;
+}
 </style>
 <script>
 
+import { Siema } from 'vue2-siema';
+
 export default {
     name: 'detailPanel',
+    components: {
+        gallery: Siema,
+    },
     data: function () {
         return {
             
