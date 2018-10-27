@@ -9,15 +9,13 @@
             </ul>
         </div>
         <div class="grid-x">
-            <div class="cell auto">
-                <gallery ref="gallery">
-                    <img src="./assets/photoblank.svg"/>
-                    <img src="./assets/photoblank.svg"/>
-                    <img src="./assets/photoblank.svg"/>
+            <div class="cell auto" v-if="detail.photos.length > 0">
+                <gallery ref="gallery" v-bind:options="{loop: true}">
+                    <img v-for="img in detail.photos" v-bind:src="img"/>
                 </gallery>
             </div>
         </div>
-        <div class="grid-x">
+        <div class="grid-x" v-if="detail.photos.length > 1">
             <div class="cell auto">
                 <button class="button small expanded" v-on:click="$refs.gallery.prev()">&lt;</button>
             </div>
@@ -26,19 +24,35 @@
             </div>
         </div>
         <div class="grid-x">
+            <button class="button expanded">Add photo</button>
+        </div>
+        <div class="grid-x">
             {{ detail.description }}
         </div>
         <div class="grid-x">
+            <div class="cell auto">
+                <label for="favourite"><img src="./assets/fav.svg"> Add to favourites</label>
+            </div>
             <div class="cell shrink">
                 <div class="switch small">
-                    <input class="switch-input" id="testSwitch" type="checkbox" name="testSwitch">
-                    <label class="switch-paddle" for="testSwitch">
+                    <input class="switch-input" id="favourite" type="checkbox" name="testSwitch">
+                    <label class="switch-paddle" for="favourite">
                         <span class="show-for-sr">Add to favourites</span>
                     </label>
                 </div> 
             </div>
+        </div>
+        <div class="grid-x">
             <div class="cell auto">
-                <label for="testSwitch">Add to favourites</label>
+                <label for="shortlist"><img src="./assets/short.svg"> Add to shortlist</label>
+            </div>
+            <div class="cell shrink">
+                <div class="switch small">
+                    <input class="switch-input" id="shortlist" type="checkbox" name="testSwitch">
+                    <label class="switch-paddle" for="shortlist">
+                        <span class="show-for-sr">Add to shortlist</span>
+                    </label>
+                </div> 
             </div>
         </div>
         <button class="close-button" type="button" v-on:click="$emit('showPanel', 'detail', null)"><span aria-hidden="true">×</span></button>
@@ -53,6 +67,7 @@
 
 import { Siema } from 'vue2-siema';
 
+
 export default {
     name: 'detailPanel',
     components: {
@@ -60,7 +75,6 @@ export default {
     },
     data: function () {
         return {
-            
         };
     },
     computed: {

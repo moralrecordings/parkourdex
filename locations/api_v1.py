@@ -54,7 +54,7 @@ class LocationListSerializer( serializers.ModelSerializer ):
 class LocationSerializer( serializers.ModelSerializer ):
     class Meta:
         model = Location
-        fields = ('id', 'name', 'features', 'location', 'description')
+        fields = ('id', 'name', 'features', 'location', 'description', 'photos')
 
 
 class LocationViewSet( viewsets.ModelViewSet ):

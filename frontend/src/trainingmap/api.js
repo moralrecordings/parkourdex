@@ -78,6 +78,7 @@ var fetchLocations = function (base_url, success, failure) {
                 name: el.name,
                 features: el.features,
                 location: L.latLng(el.location.coordinates[1], el.location.coordinates[0]),
+                photos: el.photos,
             };
         });
         success(data);

@@ -47,7 +47,7 @@ class Feature( Base ):
     name = models.CharField( max_length=256, unique=True )
     description = models.TextField()
     category = models.ForeignKey( FeatureCategory, null=True, related_name='features', on_delete=models.SET_NULL )
-    icon = models.ImageField()
+    icon = models.FileField()
 
     def __str__( self ):
         return self.name
@@ -61,6 +61,14 @@ class Location( Base ):
 
     def __str__( self ):
         return self.name
+
+
+class LocationVisit( Base ):
+    user = models.ForeignKey( get_user_model(), on_delete=models.CASCADE )
+    location = models.ForeignKey( Location, on_delete=models.CASCADE )
+
+    class Meta:
+        unique_together = ('user', 'location')
 
 
 class Comment( Base ):
