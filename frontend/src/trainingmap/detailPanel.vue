@@ -55,6 +55,24 @@
                 </div> 
             </div>
         </div>
+        <div class="grid-x">
+            <div class="cell auto">
+                <hr/>
+            </div>
+        </div>
+        <div class="grid-x">
+            <h5>Training lore</h5>
+        </div>
+        <div>
+            <div class="grid-x">
+                <div class="cell auto">
+                    <textarea rows="5" placeholder="Add your own lore here..."/>
+                </div>
+            </div>
+            <div class="grid-x">
+                <button class="button expanded">Submit lore</button>
+            </div>
+        </div>
         <button class="close-button" type="button" v-on:click="$emit('showPanel', 'detail', null)"><span aria-hidden="true">×</span></button>
     </div>
 </template>

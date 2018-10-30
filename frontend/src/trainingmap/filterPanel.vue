@@ -112,7 +112,7 @@
             <div class="grid-container full">
                 <div v-for="feat in cat.features" v-bind:key="feat" class="grid-x">
                     <div class="cell auto">
-                        <label v-bind:for="`swFeature_${ features[feat].id }`">{{ features[feat].name }}</label>
+                        <label v-bind:for="`swFeature_${ features[feat].id }`"><img v-if="features[feat].icon" v-bind:src="features[feat].icon"/> {{ features[feat].name }}</label>
                     </div>
                     <div class="cell shrink">
                         <div class="switch small">
