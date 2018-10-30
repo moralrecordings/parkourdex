@@ -54,7 +54,13 @@ class LocationListSerializer( serializers.ModelSerializer ):
 class LocationSerializer( serializers.ModelSerializer ):
     class Meta:
         model = Location
-        fields = ('id', 'name', 'features', 'location', 'description', 'photos')
+        fields = ('id', 'name', 'features', 'location', 'description', 'photos', 'editable')
+
+    editable = serializers.SerializerMethodField()
+
+    def get_editable( self, obj ):
+        request = self.context.get( 'request' )
+        return AuthorOrAdmin().object_permission_test( request.user, obj )
 
 
 class LocationViewSet( viewsets.ModelViewSet ):
