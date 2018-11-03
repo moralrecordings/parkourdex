@@ -33,7 +33,7 @@ class FeatureInnerSerializer( serializers.ModelSerializer ):
 
 
 class FeatureCategorySerializer( serializers.ModelSerializer ):
-    features = FeatureInnerSerializer(many=True)
+    features = FeatureInnerSerializer( many=True )
     class Meta:
         model = FeatureCategory
         fields = ('id', 'name', 'features')
@@ -56,6 +56,7 @@ class LocationSerializer( serializers.ModelSerializer ):
         model = Location
         fields = ('id', 'name', 'features', 'location', 'description', 'photos', 'editable')
 
+    photos = serializers.PrimaryKeyRelatedField( many=True, read_only=True )
     editable = serializers.SerializerMethodField()
 
     def get_editable( self, obj ):

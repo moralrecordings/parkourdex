@@ -64,10 +64,10 @@ export default {
         signin: function () {
             var vm = this;
             this.errorMessage = null;
-            submitLogin(vm.parkourdexUrl, JSON.stringify({
+            submitLogin(vm.parkourdexUrl, {
                 username: vm.username,
                 password: vm.password
-            }), function (data) {
+            }, function (data) {
                 vm.$emit('login', data);
             }, function (error) {
                 vm.errorMessage = error;

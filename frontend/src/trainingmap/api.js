@@ -13,7 +13,7 @@ var submitWrap = function (path, base_url, method, body, success, failure) {
     return fetch(`${base_url}${path}`, {
         credentials: 'include',
         method: method,
-        body: body,
+        body: JSON.stringify(body),
         headers: {
             'X-CSRFToken': csrftoken,
             'Content-Type': 'application/json'
@@ -94,6 +94,14 @@ var fetchLogin = function (base_url, success, failure) {
     fetchWrap('/api/v1/login.json', base_url, success, failure);
 };
 
+var submitSpot = function (base_url, body, success, failure) {
+    submitWrap('/api/v1/location.json', base_url, 'POST', body, success, failure);
+};
+
+var updateSpot = function (base_url, body, id, success, failure) {
+    submitWrap(`/api/v1/location/${id}.json`, base_url, 'PUT', body, success, failure);
+};
+
 var submitLogin = function (base_url, body, success, failure) {
     submitWrap('/api/v1/login.json', base_url, 'POST', body, success, failure); 
 };
@@ -108,6 +116,8 @@ export {
     fetchLocations,
     fetchDetail,
     fetchLogin,
+    submitSpot,
+    updateSpot,
     submitLogin,
     submitLogout,
 }

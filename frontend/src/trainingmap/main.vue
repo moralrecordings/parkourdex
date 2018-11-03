@@ -3,7 +3,7 @@
     <div class="off-canvas position-left" v-bind:class="{'is-open': panelVisible}">
         <loginPanel v-if="panel == 'login'" v-on:showPanel="showPanel" v-bind:parkourdexUrl="parkourdexUrl" v-on:login="updateLogin"/>
         <settingsPanel v-if="panel == 'settings'" v-on:showPanel="showPanel" v-bind:parkourdexUrl="parkourdexUrl" v-bind:user="login" v-on:login="updateLogin"/>
-        <editPanel v-if="panel == 'edit'" v-on:showPanel="showPanel" v-on:toggleMode="toggleMode" v-bind:parkourdexUrl="parkourdexUrl" v-bind:features="features" v-bind:categories="categories"/>
+        <editPanel v-if="panel == 'edit'" v-on:showPanel="showPanel" v-on:toggleMode="toggleMode" v-bind:parkourdexUrl="parkourdexUrl" v-bind:features="features" v-bind:categories="categories" v-bind:detail="editLocation" v-on:updateLocation="updateLocation" v-on:error="showAlert"/>
         <detailPanel v-if="panel == 'detail'" v-on:showPanel="showPanel" v-bind:features="features" v-bind:detail="locationDetail"/>
         <filterPanel v-if="panel == 'filters'" v-on:showPanel="showPanel" v-on:updateFilters="updateFilters" v-bind:options="filterOptions" v-bind:features="features" v-bind:categories="categories"/>
     </div>
@@ -172,10 +172,14 @@ export default {
             mode: 'default',
             addPos: null,
             editLocation: {
-                id: null,
+                id: null, 
                 name: '',
                 description: '',
-                features: []
+                features: [],
+                'location': {
+                    type: 'Point',
+                    coordinates: [0, 0],
+                }
             },
             login: {
                 email: null,
@@ -206,7 +210,14 @@ export default {
                     featureStatus = vm.filterOptions.showUntagged;
                 } else {
                     featureStatus = el.features.some(function (fl) {
-                        return vm.featureMap.get(fl).enabled;
+                        var feat = vm.featureMap.get(fl);
+                        if (feat) {
+                            return feat.enabled;
+                        }
+                        console.log('FEATURE MISS');
+                        console.log(feat);
+                        console.log(fl);
+                        return false;
                     });
                 }
                 return featureStatus;
@@ -218,6 +229,10 @@ export default {
         mapboxToken: String,
     },
     methods: {
+        showAlert: function (alert) {
+            this.alert = error;
+            this.alertVisible = true;
+        },
         getMapboxUrl: function (layer_id) {
             return `https://api.mapbox.com/v4/${layer_id}/{z}/{x}/{y}.png256?access_token=${this.mapboxToken}`;
         },
@@ -228,7 +243,7 @@ export default {
                 vm.panel = 'detail';
                 vm.panelVisible = true;
             }, function (error) {
-                console.log(error);
+                vm.showAlert(error);
             });
         },
         showPanel: function (panel_id, source) {
@@ -237,8 +252,13 @@ export default {
         toggleMode: function (mode) {
             this.mode = mode;
             if (mode == 'add') {
+                this.editLocation.id = null;
+                this.editLocation.name = '';
+                this.editLocation.features = [];
+                this.editLocation.description = '';
                 this.addPos = L.latLng(this.center.lat, this.center.lng);
             } else if (mode == 'addDetail') {
+                this.editLocation.location.coordinates = [this.addPos.lng, this.addPos.lat];
                 this.togglePanel('edit');
             } else if (mode == 'default') {
                 this.panelVisible = false;
@@ -262,8 +282,7 @@ export default {
                     vm.myCoords = L.latLng(pos.coords.latitude, pos.coords.longitude);
                     vm.myAccuracy = pos.coords.accuracy / 2;
                 }, function (err) {
-                    vm.alert = `Geolocation failure: ${err.code} (${err.message})`;
-                    vm.alertVisible = true;
+                    vm.showAlert(`Geolocation failure: ${err.code} (${err.message})`);
                 }, {
                     enableHighAccuracy: true,
                     maximumAge: 300
@@ -292,6 +311,24 @@ export default {
                 }
             }
         },
+        updateLocation : function (result) {
+            var entry = {
+                id: result.id,
+                name: result.name,
+                features: result.features,
+                'location': L.latLng(result.location.coordinates[1], result.location.coordinates[0]),
+            };
+            var index = this.locations.find(function (el) {
+                return el.id == entry.id;
+            });
+            if (index != undefined) {
+                this.locations[index] = entry;
+            } else {
+                this.locations.push(entry);
+            }
+            this.getDetail(entry.id);
+            this.togglePanel('detail');
+        },
         updateLogin: function (creds) {
             this.login.email = creds.email
             this.login.username = creds.username;
@@ -302,18 +339,18 @@ export default {
         update: function () {
             var vm = this;
             fetchLogin(vm.parkourdexUrl, vm.updateLogin, function (error) {
-                console.log(error);
+                vm.showAlert(error);
             });
             fetchFeatureCategories(vm.parkourdexUrl, function (data) {
                 vm.features = data.features;
                 vm.categories = data.categories;
             }, function (error) {
-                console.log(error);
+                vm.showAlert(error);
             });
             fetchLocations(vm.parkourdexUrl, function (data) {
                 vm.locations = data;
             }, function (error) {
-                console.log(error);
+                vm.showAlert(error);
             });
         },
         updateWindow: function () {

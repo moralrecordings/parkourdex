@@ -57,7 +57,7 @@ class Location( Base ):
     name = models.CharField( max_length=256 )
     location = models.PointField()
     description = models.TextField()
-    features = models.ManyToManyField( Feature, related_name='locations' )
+    features = models.ManyToManyField( Feature, related_name='locations', blank=True )
 
     def __str__( self ):
         return self.name

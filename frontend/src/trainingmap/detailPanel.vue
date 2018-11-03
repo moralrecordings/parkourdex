@@ -3,7 +3,7 @@
         <h3>{{ detail.name }}</h3>
         <div class="grid-x">
             <ul>
-                <li v-for="feature in detail.features">
+                <li v-for="feature in detail.features" v-bind:key="feature" >
                     <img v-if="featureMap.get(feature) && featureMap.get(feature).icon" v-bind:src="`${parkourdexUrl}${featureMap.get(feature).icon}`" v-bind:title="featureMap.get(feature).name" /> {{ featureMap.get(feature).name }}
                 </li>
             </ul>
@@ -11,7 +11,7 @@
         <div class="grid-x">
             <div class="cell auto" v-if="detail.photos.length > 0">
                 <gallery ref="gallery" v-bind:options="{loop: true}">
-                    <img v-for="img in detail.photos" v-bind:src="img"/>
+                    <img v-for="img in detail.photos" v-bind:key="img" v-bind:src="img"/>
                 </gallery>
             </div>
         </div>
@@ -23,8 +23,9 @@
                 <button class="button small expanded" v-on:click="$refs.gallery.next()">&gt;</button>
             </div>
         </div>
-        <div class="grid-x">
-            <button class="button expanded">Add photo</button>
+        <div class="grid-x expanded button-group">
+            <button class="button">Add photo</button>
+            <button class="button">Edit location</button>
         </div>
         <div class="grid-x">
             {{ detail.description }}
