@@ -3,8 +3,8 @@
     <div class="off-canvas position-left" v-bind:class="{'is-open': panelVisible}">
         <loginPanel v-if="panel == 'login'" v-on:showPanel="showPanel" v-bind:parkourdexUrl="parkourdexUrl" v-on:login="updateLogin"/>
         <settingsPanel v-if="panel == 'settings'" v-on:showPanel="showPanel" v-bind:parkourdexUrl="parkourdexUrl" v-bind:user="login" v-on:login="updateLogin"/>
-        <editPanel v-if="panel == 'edit'" v-on:showPanel="showPanel" v-on:toggleMode="toggleMode" v-bind:parkourdexUrl="parkourdexUrl" v-bind:features="features" v-bind:categories="categories" v-bind:detail="editLocation" v-on:updateLocation="updateLocation" v-on:error="showAlert"/>
-        <detailPanel v-if="panel == 'detail'" v-on:showPanel="showPanel" v-bind:features="features" v-bind:detail="locationDetail"/>
+        <editPanel v-if="panel == 'edit'" v-on:showPanel="showPanel" v-on:toggleMode="toggleMode" v-bind:parkourdexUrl="parkourdexUrl" v-bind:features="features" v-bind:categories="categories" v-bind:detail="editLocation" v-on:updateLocation="updateLocation" v-on:toggleEditLocation="toggleEditLocation" v-on:error="showAlert"/>
+        <detailPanel v-if="panel == 'detail'" v-on:showPanel="showPanel" v-on:toggleEdit="toggleEdit" v-bind:features="features" v-bind:detail="locationDetail" />
         <filterPanel v-if="panel == 'filters'" v-on:showPanel="showPanel" v-on:updateFilters="updateFilters" v-bind:options="filterOptions" v-bind:features="features" v-bind:categories="categories"/>
     </div>
     <div class="off-canvas-content has-transition-push has-position-left grid-y grid-frame" v-bind:class="{'is-open-left': panelVisible}">
@@ -41,7 +41,7 @@
                 </button>
             </div>
             <div class="controls-bottom callout success" v-show="mode == 'add'">
-                <div>Move the green pin to the exact spot you wish to add.</div>
+                <div>Move the green pin to the position of the spot.</div>
             </div>
         </LMap>
     </div>
@@ -230,7 +230,8 @@ export default {
     },
     methods: {
         showAlert: function (alert) {
-            this.alert = error;
+            console.log(alert);
+            this.alert = alert;
             this.alertVisible = true;
         },
         getMapboxUrl: function (layer_id) {
@@ -248,6 +249,23 @@ export default {
         },
         showPanel: function (panel_id, source) {
             this.togglePanel(panel_id);
+        },
+        toggleEdit: function (detail) {
+            var vm = this;
+            vm.editLocation = detail;
+            vm.editLocation.features = detail.features.map(function (el) {
+                return vm.features.find(function (fl) {
+                    return fl.id == el;
+                });
+            });
+            vm.addPos = L.latLng(detail.location.coordinates[1], detail.location.coordinates[0]);
+            vm.mode = 'addDetail';
+            vm.togglePanel('edit');
+        },
+        toggleEditLocation: function (detail) {
+            this.mode = 'add';
+            this.editLocation = detail;
+            this.panelVisible = false;
         },
         toggleMode: function (mode) {
             this.mode = mode;
@@ -318,11 +336,16 @@ export default {
                 features: result.features,
                 'location': L.latLng(result.location.coordinates[1], result.location.coordinates[0]),
             };
-            var index = this.locations.find(function (el) {
+            var index = this.locations.findIndex(function (el) {
                 return el.id == entry.id;
             });
+            console.log(entry);
+            console.log(index);
             if (index != undefined) {
-                this.locations[index] = entry;
+                this.locations[index].id = entry.id;
+                this.locations[index].name = entry.name;
+                this.locations[index].features = entry.features;
+                this.locations[index].location = entry.location;
             } else {
                 this.locations.push(entry);
             }

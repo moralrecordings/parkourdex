@@ -23,7 +23,7 @@ var submitWrap = function (path, base_url, method, body, success, failure) {
         if ((contentType && contentType.includes('application/json'))) {
             if (!response.ok) {
                 return response.json().then(function (error) {
-                    failure(error['error']);  
+                    failure(error);
                 });
             }
         } else {

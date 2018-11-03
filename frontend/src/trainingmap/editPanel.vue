@@ -20,24 +20,11 @@
                 <textarea v-model="detail.description" required/>
             </label>
         </div>
-        <!--div class="grid-x">
-            <div class="formControl">Photos
-                <uploader :options="{url: '/', paramName: 'file'}">
-                    <template slot="clip-uploader-action">
-                        <div>
-                           <div class="dz-message"><h2> Click or Drag and Drop files here upload </h2></div>
-                        </div>
-                    </template>
-
-                    <template slot="clip-uploader-body" slot-scope="props">
-                        <div v-for="file in props.files">
-                            <img v-bind:src="file.dataUrl" />
-                            {{ file.name }} {{ file.status }}
-                        </div>
-                    </template>
-                </uploader>
-            </div>
-        </div-->
+        <div class="grid-x">
+            <label class="formControl">Position
+                <button class="button expanded" v-on:click.prevent="toggleEditLocation">{{ detail.location.coordinates[0].toFixed(8) }}, {{ detail.location.coordinates[1].toFixed(8) }}</button>
+            </label>
+        </div>
         <div class="grid-x expanded button-group">
             <input type="submit" class="button" value="Save"/>
             <button class="button secondary" v-on:click="$emit('toggleMode', 'default')">Cancel</button>
@@ -62,7 +49,6 @@ label.formControl textarea {
 </style>
 <script>
 import multiselect from 'vue-multiselect';
-//import uploader from 'vue-clip';
 
 import {submitSpot, updateSpot} from './api.js';
 import '../multiselect-hack.scss';
@@ -72,7 +58,6 @@ export default {
     name: 'detailPanel',
     components: {
         multiselect,
-//        uploader,
     },
     data: function () {
         return {};
@@ -97,8 +82,20 @@ export default {
         detail: Object,
     },
     methods: {
+        toggleEditLocation: function () {
+            this.$emit('toggleEditLocation', this.detail);
+        },
         submit: function () {
             var vm = this;
+            var form = {
+                id: vm.detail.id,
+                name: vm.detail.name,
+                description: vm.detail.description,
+                features: vm.detail.features.map(function (el) {
+                    return el.id
+                }),
+                'location': vm.detail.location,
+            };
             var success = function (result) {
                 vm.$emit('toggleMode', 'default');
                 vm.$emit('updateLocation', result);
@@ -108,9 +105,9 @@ export default {
                 vm.$emit('error', err);
             };
             if (vm.detail.id == null) {
-                submitSpot(vm.parkourdexUrl, vm.detail, success, failure); 
+                submitSpot(vm.parkourdexUrl, form, success, failure);
             } else {
-                updateSpot(vm.parkourdexUrl, vm.detail, vm.detail.id, success, failure);
+                updateSpot(vm.parkourdexUrl, form, vm.detail.id, success, failure);
             }
         },
     },

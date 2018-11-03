@@ -64,8 +64,8 @@ class Location( Base ):
 
 
 class LocationVisit( Base ):
-    user = models.ForeignKey( get_user_model(), on_delete=models.CASCADE )
-    location = models.ForeignKey( Location, on_delete=models.CASCADE )
+    user = models.ForeignKey( get_user_model(), related_name='visits', on_delete=models.CASCADE )
+    location = models.ForeignKey( Location, related_name='visits', on_delete=models.CASCADE )
     flags = models.SmallIntegerField( default=0 )
     visit_time = models.DateTimeField( null=True )
 

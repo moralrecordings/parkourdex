@@ -3,8 +3,8 @@
         <h3>{{ detail.name }}</h3>
         <div class="grid-x">
             <ul>
-                <li v-for="feature in detail.features" v-bind:key="feature" >
-                    <img v-if="featureMap.get(feature) && featureMap.get(feature).icon" v-bind:src="`${parkourdexUrl}${featureMap.get(feature).icon}`" v-bind:title="featureMap.get(feature).name" /> {{ featureMap.get(feature).name }}
+                <li v-for="feature in detail.features" v-bind:key="feature" v-if="featureMap.get(feature)" >
+                    <img v-if="featureMap.get(feature).icon" v-bind:src="`${parkourdexUrl}${featureMap.get(feature).icon}`" v-bind:title="featureMap.get(feature).name" /> {{ featureMap.get(feature).name }}
                 </li>
             </ul>
         </div>
@@ -25,7 +25,7 @@
         </div>
         <div class="grid-x expanded button-group">
             <button class="button">Add photo</button>
-            <button class="button">Edit location</button>
+            <button class="button" v-if="detail.editable" v-on:click="toggleEdit">Edit spot</button>
         </div>
         <div class="grid-x">
             {{ detail.description }}
@@ -109,6 +109,10 @@ export default {
         detail: Object,
     },
     methods: {
+        toggleEdit: function () {
+            var vm = this;
+            vm.$emit('toggleEdit', vm.detail);
+        },
 
     },
     mounted: function () {
