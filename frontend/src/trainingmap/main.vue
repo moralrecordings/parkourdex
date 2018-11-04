@@ -34,6 +34,9 @@
                 <button class="button expanded" v-on:click="toggleMode('addDetail')">Save</button>
                 <button class="button expanded" v-on:click="toggleMode('default')">Cancel</button>
             </div>
+            <div class="controls-topright button-group stacked" v-show="mode == 'addDetail'">
+                <button class="button expanded" v-on:click="toggleMode('default')">Cancel</button>
+            </div>
             <div class="controls-bottom callout alert" v-show="alertVisible">
                 <div>{{ alert }}</div>
                 <button class="close-button" aria-label="Dismiss alert" type="button" v-on:click="alertVisible = false">
@@ -341,7 +344,7 @@ export default {
             });
             console.log(entry);
             console.log(index);
-            if (index != undefined) {
+            if (index != -1) {
                 this.locations[index].id = entry.id;
                 this.locations[index].name = entry.name;
                 this.locations[index].features = entry.features;
