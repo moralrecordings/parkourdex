@@ -63,11 +63,12 @@ class Location( Base ):
         return self.name
 
 
-class LocationVisit( Base ):
-    user = models.ForeignKey( get_user_model(), related_name='visits', on_delete=models.CASCADE )
-    location = models.ForeignKey( Location, related_name='visits', on_delete=models.CASCADE )
-    flags = models.SmallIntegerField( default=0 )
-    visit_time = models.DateTimeField( null=True )
+class LocationStatus( Base ):
+    user = models.ForeignKey( get_user_model(), related_name='location_statuses', on_delete=models.CASCADE )
+    location = models.ForeignKey( Location, related_name='location_statuses', on_delete=models.CASCADE )
+    last_visit = models.DateTimeField( null=True )
+    favourite = models.BooleanField( default=False )
+    shortlist = models.BooleanField( default=False )
 
     class Meta:
         unique_together = ('user', 'location')
