@@ -38,7 +38,7 @@
                 <div class="switch small">
                     <input class="switch-input" id="favourite" type="checkbox" name="testSwitch">
                     <label class="switch-paddle" for="favourite">
-                        <span class="show-for-sr">Add to favourites</span>
+                        <span class="show-for-sr">Favourite</span>
                     </label>
                 </div> 
             </div>
@@ -51,7 +51,7 @@
                 <div class="switch small">
                     <input class="switch-input" id="shortlist" type="checkbox" name="testSwitch">
                     <label class="switch-paddle" for="shortlist">
-                        <span class="show-for-sr">Add to shortlist</span>
+                        <span class="show-for-sr">Shortlist</span>
                     </label>
                 </div> 
             </div>
