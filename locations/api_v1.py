@@ -4,7 +4,7 @@ from django.views.decorators.cache import cache_page
 from rest_framework import viewsets, serializers, status, generics, views
 from rest_framework.decorators import detail_route, list_route, renderer_classes, authentication_classes, permission_classes
 
-from locations.models import Feature, FeatureCategory, Location
+from locations.models import Feature, FeatureCategory, Location, LocationStatus
 
 from locations.permissions import AuthorOrAdmin
 
@@ -51,12 +51,11 @@ class LocationListSerializer( serializers.ModelSerializer ):
         fields = ('id', 'name', 'features', 'location')
 
 
-class LocationSerializer( serializers.ModelSerializer ):
+class LocationSerializer( serializers.Serializer ):
     class Meta:
         model = Location
         fields = ('id', 'name', 'features', 'location', 'description', 'photos', 'editable', 'visit')
 
-    photos = serializers.PrimaryKeyRelatedField( many=True, read_only=True )
     editable = serializers.SerializerMethodField()
     visit = serializers.SerializerMethodField()
 
@@ -69,12 +68,27 @@ class LocationSerializer( serializers.ModelSerializer ):
         return obj.visits.filter( user=request.user ).first()
 
 
+class LocationStatusSerializer( serializers.ModelSerializer ):
+    class Meta:
+        model = LocationStatus
+        fields = ('last_visit', 'favourite', 'shortlist')
+
+
+class LocationStatusViewSet( viewsets.ModelViewSet ):
+    serializer_class = LocationStatusSerializer
+    permission_classes = (AuthorOrAdmin,)
+
+    def get_queryset( self ):
+        return LocationStatus.objects.filter( user=self.request.user, location=self.kwargs['location_pk'] )
+        
+
 class LocationViewSet( viewsets.ModelViewSet ):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
     list_serializer_class = LocationListSerializer
     permission_classes = (AuthorOrAdmin,)
 
+    # for the top level GET, use the minimum detail version of each record
     def get_serializer( self, *args, **kwargs ):
         if 'many' in kwargs:
             serializer_class = self.list_serializer_class
