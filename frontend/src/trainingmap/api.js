@@ -78,7 +78,6 @@ var fetchLocations = function (base_url, success, failure) {
                 name: el.name,
                 features: el.features,
                 location: L.latLng(el.location.coordinates[1], el.location.coordinates[0]),
-                photos: el.photos,
             };
         });
         success(data);
@@ -87,7 +86,19 @@ var fetchLocations = function (base_url, success, failure) {
 };
 
 var fetchDetail = function (base_url, id, success, failure) {
-    fetchWrap(`/api/v1/location/${id}.json`, base_url, success, failure);
+    var formatter = function (raw_data) {
+        var data = {
+            id: raw_data.id,
+            name: raw_data.name,
+            features: raw_data.features,
+            location: L.latLng(raw_data.location.coordinates[1], raw_data.location.coordinates[0]),
+            photos: raw_data.photos ? raw_data.photos: [],
+            description: raw_data.description,
+            editable: raw_data.editable,
+        };
+        success(data);
+    };
+    fetchWrap(`/api/v1/location/${id}.json`, base_url, formatter, failure);
 };
 
 var fetchLogin = function (base_url, success, failure) {

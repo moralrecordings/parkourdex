@@ -4,6 +4,8 @@ from django.contrib.postgres.fields import JSONField
 from django.contrib.gis.db import models
 from django.contrib.auth import get_user_model
 
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFill
 from simple_history.models import HistoricalRecords
 
 import os
@@ -86,5 +88,5 @@ def get_photo_path( instance, filename ):
 class Photo( Base ):
     location = models.ForeignKey( Location, null=True, related_name='photos', on_delete=models.SET_NULL )
     photo = models.ImageField( upload_to=get_photo_path )
-
+    thumbnail = ImageSpecField( source='photo', processors=[ResizeToFill(640, 480)] )
 
