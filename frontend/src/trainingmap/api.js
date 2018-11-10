@@ -95,6 +95,7 @@ var fetchDetail = function (base_url, id, success, failure) {
             photos: raw_data.photos ? raw_data.photos: [],
             description: raw_data.description,
             editable: raw_data.editable,
+            status: raw_data.status,
         };
         success(data);
     };

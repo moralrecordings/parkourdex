@@ -32,11 +32,11 @@
         </div>
         <div class="grid-x">
             <div class="cell auto">
-                <label for="favourite"><img src="./assets/fav.svg"> Add to favourites</label>
+                <label for="favourite"><img src="./assets/fav.svg"> Favourite</label>
             </div>
             <div class="cell shrink">
                 <div class="switch small">
-                    <input class="switch-input" id="favourite" type="checkbox" name="testSwitch">
+                    <input class="switch-input" id="favourite" type="checkbox" v-model="detail.status.favourite">
                     <label class="switch-paddle" for="favourite">
                         <span class="show-for-sr">Favourite</span>
                     </label>
@@ -45,11 +45,11 @@
         </div>
         <div class="grid-x">
             <div class="cell auto">
-                <label for="shortlist"><img src="./assets/short.svg"> Add to shortlist</label>
+                <label for="shortlist"><img src="./assets/short.svg"> Shortlist</label>
             </div>
             <div class="cell shrink">
                 <div class="switch small">
-                    <input class="switch-input" id="shortlist" type="checkbox" name="testSwitch">
+                    <input class="switch-input" id="shortlist" type="checkbox" v-model="detail.status.shortlist">
                     <label class="switch-paddle" for="shortlist">
                         <span class="show-for-sr">Shortlist</span>
                     </label>
