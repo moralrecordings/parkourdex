@@ -124,14 +124,14 @@ class NestedAPIViewRouter( nested.NestedMixin, APIViewRouter ):
     pass
 
 api_v1_router = Router()
-api_v1_router.register( 'login', LoginView, base_name='login' )
-api_v1_router.register( 'logout', LogoutView, base_name='logout' )
+api_v1_router.register( 'login', LoginView, basename='login' )
+api_v1_router.register( 'logout', LogoutView, basename='logout' )
 api_v1_router.register( 'feature', FeatureViewSet )
 api_v1_router.register( 'feature_category', FeatureCategoryViewSet )
 api_v1_router.register( 'location', LocationViewSet )
 
 location_router = NestedAPIViewRouter( api_v1_router, 'location', lookup='location' )
-location_router.register( 'status', LocationStatusView, base_name='location_status' )
+location_router.register( 'status', LocationStatusView, basename='location_status' )
 
 api_v1_urls = [
     url( '^', include( api_v1_router.urls ) ),
