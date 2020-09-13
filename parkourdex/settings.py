@@ -17,7 +17,7 @@ DEBUG = env( 'DEBUG' )
 if not DEBUG:
     ALLOWED_HOSTS = env( 'ALLOWED_HOSTS', '' ).split( ',' )
 else:
-    ALLOWED_HOSTS = ['http://*', 'https://*']
+    ALLOWED_HOSTS = ['*']
 
 DEFAULT_FROM_EMAIL = env( 'DEFAULT_FROM_EMAIL' )
 
@@ -149,7 +149,10 @@ USE_L10N = True
 
 USE_TZ = True
 
-CORS_ORIGIN_WHITELIST = [host for host in ALLOWED_HOSTS]  
+CORS_ORIGIN_WHITELIST = []
+if '*' not in ALLOWED_HOSTS:
+    CORS_ORIGIN_WHITELIST = [host for host in ALLOWED_HOSTS]  
+
 if DEBUG:
     CORS_ORIGIN_WHITELIST += [
         'http://localhost:8000',

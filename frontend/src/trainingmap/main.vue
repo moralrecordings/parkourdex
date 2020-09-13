@@ -9,7 +9,7 @@
     </div>
     <div class="off-canvas-content has-transition-push has-position-left grid-y grid-frame" v-bind:class="{'is-open-left': panelVisible}">
         <LMap ref="map" v-bind:attributionControl="false" v-bind:zoom="zoom" v-bind:center="center" v-bind:options="options">
-            <LTileLayer v-bind:url="basemapUrl"/>
+            <LTileLayer v-bind:url="basemapUrl" v-bind:options="{tileSize: 512, zoomOffset: -1}"/>
             <LMarker v-if="myCoords && filterOptions.showMyLocation" v-bind:lat-lng="myCoords" v-bind:icon="myIcon">
                 <LTooltip v-bind:content="`(${myCoords.lat}, ${myCoords.lng}) ±${myAccuracy}m`"/>
             </LMarker>
@@ -238,7 +238,7 @@ export default {
             this.alertVisible = true;
         },
         getMapboxUrl: function (layer_id) {
-            return `https://api.mapbox.com/v4/${layer_id}/{z}/{x}/{y}.png256?access_token=${this.mapboxToken}`;
+            return `https://api.mapbox.com/styles/v1/mapbox/${layer_id}/tiles/{z}/{x}/{y}?access_token=${this.mapboxToken}`;
         },
         getDetail: function (location_id) {
             var vm = this;
@@ -386,7 +386,7 @@ export default {
         },
     },
     mounted: function () {
-        this.basemapUrl = this.getMapboxUrl('mapbox.outdoors');
+        this.basemapUrl = this.getMapboxUrl('outdoors-v11');
         this.update();
     }
 }
